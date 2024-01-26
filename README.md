@@ -10,7 +10,7 @@
 
 ## 규칙
 
-![Finger-circle](./Document/finger-circle.png)
+<img src = "./Document/finger-circle.png" width="20%" height="20%">
 
 기본적으로 두 플레이어가 1:1 대결을 한다.
 
@@ -61,11 +61,11 @@
 
 (그림 5) 왼쪽에는 첫 번째 플레이어의 선택지를, 오른쪽에는 두 번째 플레이어의 선택지를 보여준다. 각 선택지 위쪽에는 승/패 결과 역시 적어준다. 아래에 ‘다음’ 버튼을 누르면 ‘그림 1’ 화면으로 넘어가며 다시 선택할 수 있게 된다.
 
-![Battle-flow](./Document/battle-flow.png)
+<img src = "./Document/battle-flow.png" width="40%" height="40%">
 
 ### 2. 규칙에 따라 말을 움직일 수 있는 윷판 만들기
 
-![Yut-board](./Document/yut-board.png)
+<img src = "./Document/yut-board.png" width="20%" height="20%">
 
 (그림이나 글씨가 다소 알아보기 힘들어도 일단은 넘어가자)
 
