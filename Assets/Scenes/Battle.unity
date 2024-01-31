@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1299,8 +1299,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1049741611}
   - {fileID: 2130984711}
+  - {fileID: 1049741611}
   - {fileID: 906696271}
   m_Father: {fileID: 73608458}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1447,7 +1447,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1759373275732652117, guid: 9c8e3253440d6ef4dbf1052db92a6c7f, type: 3}
       propertyPath: m_Name
-      value: FirstButton
+      value: ZeroButton
       objectReference: {fileID: 0}
     - target: {fileID: 2434039177786361421, guid: 9c8e3253440d6ef4dbf1052db92a6c7f, type: 3}
       propertyPath: m_Pivot.x
