@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Yutnori.unity
     guid: 171200035e7e34d9c97283da59afb0b3
+  - enabled: 1
+    path: Assets/Scenes/Battle.unity
+    guid: a6f2af5163f2f4b6f8099a41da9a6fe1
   m_configObjects: {}
