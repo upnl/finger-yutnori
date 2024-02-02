@@ -37,7 +37,7 @@ public class LoginManager : MonoBehaviour
 		else player1Hand = player1ToggleGroup.ActiveToggles().FirstOrDefault().name;
 		
 		if (player2ToggleGroup.ActiveToggles().FirstOrDefault() == null) player2Hand = "LeftHand";
-		else player2Hand = player1ToggleGroup.ActiveToggles().FirstOrDefault().name;
+		else player2Hand = player2ToggleGroup.ActiveToggles().FirstOrDefault().name;
 		
 		//플레이어가 선택한 손을 받아온다.
 
