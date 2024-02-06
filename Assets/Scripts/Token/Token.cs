@@ -19,8 +19,9 @@ public class Token : MonoBehaviour
 
     private int totalDist, movedDist;
     private Stack<Vector2> previousPositions;
-    private bool canFinish, finished;
+    private bool finished;
 
+    private int curState; // For debugging
     public void InstantMoveTo(Vector2 position)
     {
         transform.position = position;
@@ -31,7 +32,7 @@ public class Token : MonoBehaviour
     }
     public void MoveTo(Vector2 newPosition)
     {
-        transform.DOMove(newPosition, 1f);
+        transform.DOMove(newPosition, 0.5f);
     }
     public void MoveTo(GameObject boardPoint)
     {
@@ -56,6 +57,12 @@ public class Token : MonoBehaviour
 
     public bool IsDoneMoving() { return movedDist == totalDist; }
 
+    private void HandleEndOfMove()
+    {
+        movedDist++;
+        previousPositions.Push(transform.position);
+    }
+
     private bool HandleRightPoints()
     {
         for (int i = 0; i < rightPoints.Count; i++)
@@ -65,7 +72,7 @@ public class Token : MonoBehaviour
                 if (i == rightPoints.Count - 1) MoveTo(upperRightPoint);
                 else MoveTo(rightPoints[i+1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -80,7 +87,7 @@ public class Token : MonoBehaviour
                 if (i == upperPoints.Count - 1) MoveTo(upperLeftPoint);
                 else MoveTo(upperPoints[i+1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -95,7 +102,7 @@ public class Token : MonoBehaviour
                 if (i == leftPoints.Count - 1) MoveTo(lowerLeftPoint);
                 else MoveTo(leftPoints[i+1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -110,7 +117,7 @@ public class Token : MonoBehaviour
                 if (i == lowerPoints.Count - 1) MoveTo(lowerRightPoint);
                 else MoveTo(lowerPoints[i+1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -127,7 +134,7 @@ public class Token : MonoBehaviour
                 else if (i == 3) MoveTo(lowerLeftPoint);
                 else MoveTo(rightDiagPoints[i + 1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -143,7 +150,7 @@ public class Token : MonoBehaviour
                 else if (i == 3) MoveTo(lowerRightPoint);
                 else MoveTo(leftDiagPoints[i + 1]);
 
-                movedDist++;
+                HandleEndOfMove();
                 return true;
             }
         }
@@ -157,7 +164,7 @@ public class Token : MonoBehaviour
             if (movedDist == 0 || previousPositions.Peek() == (Vector2)leftDiagPoints[1].transform.position)
                 MoveTo(leftDiagPoints[2]);
             else MoveTo(rightDiagPoints[2]);
-            movedDist++;
+            HandleEndOfMove();
             return true;
         }
         return false;
@@ -166,8 +173,11 @@ public class Token : MonoBehaviour
     {
         if (IsTokenAt(lowerRightPoint))
         {
-            if (canFinish) finished = true;
+            if (previousPositions.Count > 0 &&
+               (previousPositions.Peek() == (Vector2)lowerPoints[3].transform.position ||
+                previousPositions.Peek() == (Vector2)leftDiagPoints[3].transform.position)) finished = true;
             else MoveTo(rightPoints[0]);
+            HandleEndOfMove();
             return true;
         }
         return false;
@@ -177,7 +187,8 @@ public class Token : MonoBehaviour
         if (IsTokenAt(upperRightPoint))
         {
             if (movedDist == 0) MoveTo(rightDiagPoints[0]);
-            else MoveTo(rightPoints[0]);
+            else MoveTo(upperPoints[0]);
+            HandleEndOfMove();
             return true;
         }
         return false;
@@ -188,6 +199,7 @@ public class Token : MonoBehaviour
         {
             if (movedDist == 0) MoveTo(leftDiagPoints[0]);
             else MoveTo(leftPoints[0]);
+            HandleEndOfMove();
             return true;
         }
         return false;
@@ -197,6 +209,7 @@ public class Token : MonoBehaviour
         if (IsTokenAt(lowerLeftPoint))
         {
             MoveTo(lowerPoints[0]);
+            HandleEndOfMove();
             return true;
         }
         return false;
@@ -214,20 +227,67 @@ public class Token : MonoBehaviour
         return false;
     }
 
+    private void DebugHandleKeyPress()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            curState = 1;
+            StartMove(1);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            curState = 1;
+            StartMove(2);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            curState = 1;
+            StartMove(3);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            curState = 1;
+            StartMove(4);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            curState = 1;
+            StartMove(5);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            curState = 1;
+            StartMove(-1);
+            return;
+        }
+    }
+
     private void Start()
     {
-        totalDist = movedDist = 0;
-        canFinish = finished = false;
+        totalDist = movedDist = curState = 0;
+        finished = false;
         previousPositions = new Stack<Vector2>();
         MoveTo(lowerRightPoint);
     }
 
     private void Update()
     {
-        if (finished || IsDoneMoving()) return;
+        if (curState == 0)
+        {
+            DebugHandleKeyPress();
+            return;
+        }
+        if (finished || IsDoneMoving())
+        {
+            curState = 0;
+            return;
+        }
         if (HandleBackwardsMove()) return;
-
-        previousPositions.Push(transform.position);
         
         if (HandleRightPoints()) return;
         if (HandleUpperPoints()) return;
