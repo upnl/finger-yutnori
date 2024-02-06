@@ -65,11 +65,11 @@ public class Token : MonoBehaviour
 
     private bool HandleRightPoints()
     {
-        for (int i = 0; i < rightPoints.Count; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (IsTokenAt(rightPoints[i]))
             {
-                if (i == rightPoints.Count - 1) MoveTo(upperRightPoint);
+                if (i == 3) MoveTo(upperRightPoint);
                 else MoveTo(rightPoints[i+1]);
 
                 HandleEndOfMove();
@@ -80,11 +80,11 @@ public class Token : MonoBehaviour
     }
     private bool HandleUpperPoints()
     {
-        for (int i = 0; i < upperPoints.Count; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (IsTokenAt(upperPoints[i]))
             {
-                if (i == upperPoints.Count - 1) MoveTo(upperLeftPoint);
+                if (i == 3) MoveTo(upperLeftPoint);
                 else MoveTo(upperPoints[i+1]);
 
                 HandleEndOfMove();
@@ -95,11 +95,11 @@ public class Token : MonoBehaviour
     }
     private bool HandleLeftPoints()
     {
-        for (int i = 0; i < leftPoints.Count; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (IsTokenAt(leftPoints[i]))
             {
-                if (i == leftPoints.Count - 1) MoveTo(lowerLeftPoint);
+                if (i == 3) MoveTo(lowerLeftPoint);
                 else MoveTo(leftPoints[i+1]);
 
                 HandleEndOfMove();
@@ -110,11 +110,11 @@ public class Token : MonoBehaviour
     }
     private bool HandleLowerPoints()
     {
-        for (int i = 0; i < lowerPoints.Count; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (IsTokenAt(lowerPoints[i]))
             {
-                if (i == lowerPoints.Count - 1) MoveTo(lowerRightPoint);
+                if (i == 3) MoveTo(lowerRightPoint);
                 else MoveTo(lowerPoints[i+1]);
 
                 HandleEndOfMove();
