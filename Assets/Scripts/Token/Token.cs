@@ -17,25 +17,12 @@ public class Token : MonoBehaviour
     [SerializeField] private GameObject upperLeftPoint;
     [SerializeField] private GameObject lowerLeftPoint;
 
-    /// <summary>
-    /// Distance that token has to move on this turn; Negative values represent backward movement
-    /// </summary>
-    private int totalDist;
+    private int totalDist;    // Distance that token has to move on this turn; Negative values represent backward movement
+    private int movedDist;    /// Distance that token has moved on this turn
 
-    /// <summary>
-    /// Distance that token has moved on this turn
-    /// </summary>
-    private int movedDist;
+    private Stack<Vector2> previousPositions;     /// Stores the token's previous positions for backward movement
 
-    /// <summary>
-    /// Stores the token's previous positions for backward movement
-    /// </summary>
-    private Stack<Vector2> previousPositions;
-
-    /// <summary>
-    /// Whether the token has completed a lap
-    /// </summary>
-    private bool finished;
+    private bool finished;    /// Whether the token has completed a lap
 
     private void Start()
     {
