@@ -5,8 +5,11 @@ using UnityEngine.UIElements;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject targetObject_Canvas;
-    public GameObject targetObject_Blocker;
+    public GameObject TargetPlayer0Done;
+    public GameObject TargetPlayer1Done;
+    public GameObject TargetCanvas;
+
+    int curPlayer = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -21,18 +24,35 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Set the position of Blocker to match that of Canvas.
+    /// if curPlayer is 0, set "Player0Done" to match Canvas and change curPlayer to 1.
+    /// if curPlayer is 1, set "Player1DOne" to match Canvas and change curPlayer to 0.
     /// </summary>
     public void OnClickDoneButton()
     {
-        targetObject_Blocker.transform.position = targetObject_Canvas.transform.position;
+        if (curPlayer == 0)
+        {
+            TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
+        }
+        else
+        {
+            TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
+        }
+        curPlayer = (curPlayer == 0) ? 1 : 0;
     }
 
     /// <summary>
-    /// Set the position of Blocker to (2000,0,0).
+    /// set the position of "Player0Done" to (2000,0,0)
     /// </summary>
-    public void OnClickBlackButton()
+    public void OnClickPlayer0DoneButton()
     {
-        targetObject_Blocker.transform.position = new Vector3(2000, 0, 0);
+        TargetPlayer0Done.transform.position = new Vector3(2000, 0, 0);
+    }
+
+    /// <summary>
+    /// set the position of "Player1Done" to (2000,0,0)
+    /// </summary>
+    public void OnClickPlayer1DOneButton()
+    {
+        TargetPlayer1Done.transform.position = new Vector3(2000, 0, 0);
     }
 }
