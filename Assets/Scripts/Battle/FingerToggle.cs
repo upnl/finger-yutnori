@@ -31,6 +31,5 @@ public class FingerToggle : MonoBehaviour
         {
             _FingerToggleGroup.SelectedFinger = -1;
         }
-        Debug.Log(_FingerToggleGroup.SelectedFinger.ToString());
     }
 }

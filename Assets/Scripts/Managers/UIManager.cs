@@ -1,43 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public FingerToggleGroup fingerToggleGroup;
+
+    public Toggle ZeroButton;
+    public Toggle OneButton;
+    public Toggle TwoButton;
+    public Toggle ThreeButton;
+    public Toggle FourButton;
+    public Toggle FiveButton;
+
     public GameObject TargetPlayer0Done;
     public GameObject TargetPlayer1Done;
     public GameObject TargetCanvas;
 
     int curPlayer = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
-    /// if curPlayer is 0, set "Player0Done" to match Canvas and change curPlayer to 1.
-    /// if curPlayer is 1, set "Player1DOne" to match Canvas and change curPlayer to 0.
+    /// Depending on curpPlayer, set "Player0Done" or "Player1Done" to match Canvas and change curPlayer.
+    /// change isOn of selected toggle to false.
     /// </summary>
     public void OnClickDoneButton()
     {
-        if (curPlayer == 0)
+        if (fingerToggleGroup.IsToggleClicked() == true) // check if player choose toggle
         {
-            TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
+            if (curPlayer == 0)
+            {
+                TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
+            }
+            else
+            {
+                TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
+            }
+            curPlayer = (curPlayer == 0) ? 1 : 0;
+
+            switch (fingerToggleGroup.SelectedFinger)
+            {
+                case 0:
+                    ZeroButton.isOn = false;
+                    break;
+                case 1:
+                    OneButton.isOn = false;
+                    break;
+                case 2:
+                    TwoButton.isOn = false;
+                    break;
+                case 3:
+                    ThreeButton.isOn = false;
+                    break;
+                case 4:
+                    FourButton.isOn = false;
+                    break;
+                case 5:
+                    FiveButton.isOn = false;
+                    break;
+            }
         }
-        else
-        {
-            TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
-        }
-        curPlayer = (curPlayer == 0) ? 1 : 0;
     }
 
     /// <summary>
