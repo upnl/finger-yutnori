@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311924, g: 0.38073963, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -240,6 +240,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 495051f36ab41704fa570a27672d1e40, type: 3}
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: OneButton
@@ -492,6 +496,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 09dca4982a9ff5e4f9a4c555b71bacb5, type: 3}
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: FoutButton
@@ -608,6 +616,7 @@ GameObject:
   m_Component:
   - component: {fileID: 256148340}
   - component: {fileID: 256148341}
+  - component: {fileID: 256148342}
   m_Layer: 5
   m_Name: FingerToggleGroup
   m_TagString: Untagged
@@ -648,7 +657,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 1
+  m_AllowSwitchOff: 0
+--- !u!114 &256148342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 256148339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50e6923ce91f72943b9fc08f3c552cea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SelectedFinger: 0
 --- !u!1 &573423204
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,6 +1040,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 7d64b8fc9afcee04a9803531677ccab5, type: 3}
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: ThreeButton
@@ -1341,6 +1367,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 605250897}
     m_Modifications:
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: ZeroButton
@@ -1427,12 +1457,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_IsOn
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 256148341}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_PressedColor.b
+      value: 0.78431374
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_PressedColor.g
+      value: 0.78431374
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_PressedColor.r
+      value: 0.78431374
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244155296428721821, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1455,6 +1509,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 5ed139a8d2a5aa540914be05c743888e, type: 3}
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: TwoButton
@@ -1573,6 +1631,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 3384e6fc032fe8a479a62e9ba22f2a7c, type: 3}
+    - target: {fileID: 300998192581130457, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
+      propertyPath: _ToggleGroup
+      value: 
+      objectReference: {fileID: 256148339}
     - target: {fileID: 3939263650187549322, guid: 59a3601c199b340eca07b3a15d8a4f08, type: 3}
       propertyPath: m_Name
       value: FiveButton
