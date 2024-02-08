@@ -5,15 +5,13 @@ using UnityEngine.UI;
 
 public class FingerToggle : MonoBehaviour
 {
+    [SerializeField]private int SerialNumber;
+    [SerializeField]private FingerToggleGroup _FingerToggleGroup;
+
     // Start is called before the first frame update
-    private Toggle _Toggle;
-    [SerializeField]private GameObject _ToggleGroup;
-    [SerializeField] private int SerialNumber;
-    private FingerToggleGroup _FingerToggleGroup;
     void Start()
     {
-        _Toggle = GetComponent<Toggle>();
-        _FingerToggleGroup = _ToggleGroup.GetComponent<FingerToggleGroup>();
+        
     }
 
     // Update is called once per frame
@@ -21,8 +19,18 @@ public class FingerToggle : MonoBehaviour
     {
         
     }
+
+    //Toggle의 IsOn이 변화할 때 호출되는 메서드. 선택할 경우 자신의 SerialNumber을, 해제할 경우 -1을 SelectedFinger에 할당
     public void ToggleClick(bool isOn)
     {
-        _FingerToggleGroup.SelectedFinger = SerialNumber;
+        if(_FingerToggleGroup.SelectedFinger < 0)
+        {
+            _FingerToggleGroup.SelectedFinger = SerialNumber;
+        }
+        else
+        {
+            _FingerToggleGroup.SelectedFinger = -1;
+        }
+        Debug.Log(_FingerToggleGroup.SelectedFinger.ToString());
     }
 }
