@@ -1547,12 +1547,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fingerToggleGroup: {fileID: 256148342}
-  ZeroButton: {fileID: 1476963261}
-  OneButton: {fileID: 893480637}
-  TwoButton: {fileID: 1894451313}
-  ThreeButton: {fileID: 1770277222}
-  FourButton: {fileID: 741200673}
-  FiveButton: {fileID: 2096674927}
+  Buttons:
+  - {fileID: 1476963261}
+  - {fileID: 893480637}
+  - {fileID: 1894451313}
+  - {fileID: 1770277222}
+  - {fileID: 741200673}
+  - {fileID: 2096674927}
   TargetPlayer0Done: {fileID: 97880151}
   TargetPlayer1Done: {fileID: 1878852114}
   TargetCanvas: {fileID: 7628541}

@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
 {
     public FingerToggleGroup fingerToggleGroup;
 
+    [SerializeField] private List<Toggle> Buttons;
+
     public GameObject TargetPlayer0Done;
     public GameObject TargetPlayer1Done;
     public GameObject TargetCanvas;
@@ -30,8 +32,6 @@ public class UIManager : MonoBehaviour
             }
             curPlayer = (curPlayer == 0) ? 1 : 0;
 
-            List<Toggle> Buttons = new();
-            Buttons.AddRange(fingerToggleGroup.GetComponentsInChildren<Toggle>());
             Buttons[fingerToggleGroup.SelectedFinger].isOn = false;
         }
     }
