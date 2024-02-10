@@ -17,10 +17,6 @@ public class Token : MonoBehaviour
         previousPositions = new Stack<Vector2>();
     }
 
-    /// <summary>
-    /// If the token is finished or it is moving, return. If the token is done moving, accept inputs and return.
-    /// Else, find where the token is and move it accordingly.
-    /// </summary>
     private void Update()
     {
 
@@ -34,6 +30,7 @@ public class Token : MonoBehaviour
     {
         transform.position = newPosition;
     }
+
     /// <summary>
     /// Moves token to boardPoint instantly
     /// </summary>
@@ -44,15 +41,16 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to newPosition smoothly
+    /// Moves token to newPosition smoothly; Use with StartCoroutine()
     /// </summary>
     /// <param name="newPosition"></param>
     public IEnumerator MoveTo(Vector2 newPosition)
     {
         yield return transform.DOMove(newPosition, 0.5f).WaitForCompletion();
     }
+
     /// <summary>
-    /// Moves token to boardPoint smoothly
+    /// Moves token to boardPoint smoothly; Use with StartCoroutine()
     /// </summary>
     /// <param name="boardPoint"></param>
     public IEnumerator MoveTo(GameObject boardPoint)
@@ -69,6 +67,7 @@ public class Token : MonoBehaviour
     {
         return transform.position.x == checkPosition.x && transform.position.y == checkPosition.y;
     }
+
     /// <summary>
     /// Returns whether the Token is at the same position as boardPoint
     /// </summary>

@@ -71,12 +71,21 @@ public class TokenManager : MonoBehaviour
         DebugHandleInput();
     }
 
+    /// <summary>
+    /// Clears previousPositions of token and moves it to lowerRightPoint
+    /// </summary>
+    /// <param name="token"></param>
     private void ResetToken(Token token)
     {
         token.ClearPreviousPositions();
         StartCoroutine(token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]));
     }
 
+    /// <summary>
+    /// Gets index of the boardPoint that token is on; -1 if none
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private int GetBoardPointIndex(Token token)
     {
         for (int index = 0; index < boardPoints.Count; index++)
@@ -86,7 +95,13 @@ public class TokenManager : MonoBehaviour
         return -1;
     }
 
-    private Vector2 GetNextPosition(Token token, bool firstMove)
+    /// <summary>
+    /// Gets the next position that token has to go to from current position
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="isFirstMove"></param>
+    /// <returns>nextPosition; if finished, finishedPosition</returns>
+    private Vector2 GetNextPosition(Token token, bool isFirstMove)
     {
         int index = GetBoardPointIndex(token);
         if (index == -1) return Vector2.zero;
@@ -101,7 +116,7 @@ public class TokenManager : MonoBehaviour
             return finishedPosition;
         }
 
-        if (firstMove)
+        if (isFirstMove)
         {
             if (index == (int)boardPointIndex.UpperRight)
             {
@@ -140,6 +155,12 @@ public class TokenManager : MonoBehaviour
         return boardPoints[index + 1].transform.position;
     }
 
+    /// <summary>
+    /// Actually moves token according to GetNextPosition(); Use with StartCoroutine()
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="distance"></param>
+    /// <returns></returns>
     private IEnumerator MoveToken(Token token, int distance)
     {
         if (distance < 0)
@@ -156,6 +177,11 @@ public class TokenManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Starts a coroutine that moves token by distance
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="distance"></param>
     private void StartMove(Token token, int distance)
     {
         if (token.IsFinished) return;
@@ -163,6 +189,9 @@ public class TokenManager : MonoBehaviour
         StartCoroutine(MoveToken(token, distance));
     }
 
+    /// <summary>
+    /// A debug function that handles keyboard input
+    /// </summary>
     private void DebugHandleInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
