@@ -11,7 +11,7 @@ public class Token : MonoBehaviour
 
     public bool IsFinished { get; set; }
 
-    private void Start()
+    private void Awake()
     {
         isFinished = false;
         previousPositions = new Stack<Vector2>();
@@ -77,6 +77,11 @@ public class Token : MonoBehaviour
     public bool IsTokenAt(GameObject boardPoint)
     {
         return IsTokenAt(boardPoint.transform.position);
+    }
+
+    public void ClearPreviousPositions()
+    {
+        previousPositions.Clear();
     }
 
     /// <summary>

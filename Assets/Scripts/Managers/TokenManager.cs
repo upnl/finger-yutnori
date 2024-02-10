@@ -73,6 +73,7 @@ public class TokenManager : MonoBehaviour
 
     private void ResetToken(Token token)
     {
+        token.ClearPreviousPositions();
         StartCoroutine(token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]));
     }
 
@@ -95,7 +96,9 @@ public class TokenManager : MonoBehaviour
             token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag4].transform.position))
         {
             token.IsFinished = true;
-            return Vector2.zero;
+            Vector2 finishedPosition = boardPoints[(int)boardPointIndex.LowerRight].transform.position;
+            finishedPosition.y -= 15f;
+            return finishedPosition;
         }
 
         if (firstMove)
