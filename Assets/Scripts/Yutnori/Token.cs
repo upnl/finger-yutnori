@@ -6,20 +6,16 @@ using System.Collections;
 
 public class Token : MonoBehaviour
 {
-    private bool isFinished;    /// Whether the token has completed a lap
-    private Stack<Vector2> previousPositions;     /// Stores the token's previous positions for backward movement
+    public TokenManager tokenManager;
 
-    public bool IsFinished { get; set; }
+    public Vector2 initialPosition;
+    public bool isFinished;    /// Whether the token has completed a lap
+    public Stack<int> previousIndexs;     /// Stores the token's previous positions for backward movement
 
     private void Awake()
     {
         isFinished = false;
-        previousPositions = new Stack<Vector2>();
-    }
-
-    private void Update()
-    {
-
+        previousIndexs = new();
     }
 
     /// <summary>
@@ -40,6 +36,11 @@ public class Token : MonoBehaviour
         InstantMoveTo(boardPoint.transform.position);
     }
 
+    public void InstantMoveTo(int index)
+    {
+        InstantMoveTo(tokenManager.boardPoints[index]);
+    }
+
     /// <summary>
     /// Moves token to newPosition smoothly; Use with StartCoroutine()
     /// </summary>
@@ -56,6 +57,11 @@ public class Token : MonoBehaviour
     public IEnumerator MoveTo(GameObject boardPoint)
     {
         yield return MoveTo(boardPoint.transform.position);
+    }
+
+    public IEnumerator MoveTo(int index)
+    {
+        yield return MoveTo(tokenManager.boardPoints[index]);
     }
 
     /// <summary>
@@ -78,39 +84,53 @@ public class Token : MonoBehaviour
         return IsTokenAt(boardPoint.transform.position);
     }
 
-    public void ClearPreviousPositions()
+    public bool IsTokenAt(int index)
     {
-        previousPositions.Clear();
+        return IsTokenAt(tokenManager.boardPoints[index]);
+    }
+
+    public int GetBoardPointIndex()
+    {
+        for (int index = 0; index < tokenManager.boardPoints.Count; index++)
+        {
+            if (IsTokenAt(tokenManager.boardPoints[index])) return index;
+        }
+        return -1;
+    }
+
+    public void ClearpreviousIndexs()
+    {
+        previousIndexs.Clear();
     }
 
     /// <summary>
     /// Pushes Token's current position into previousPositions
     /// </summary>
-    public void RecordPosition()
+    public void RecordpreviousIndex()
     {
-        previousPositions.Push(transform.position);
+        previousIndexs.Push(GetBoardPointIndex());
     }
 
-    public int CountPreviousPositions()
+    public int CountpreviousIndexs()
     {
-        return previousPositions.Count;
+        return previousIndexs.Count;
     }
 
     /// <summary>
     /// Pops and returns top of previousPositions
     /// </summary>
     /// <returns></returns>
-    public Vector2 PopPreviousPositions()
+    public int PoppreviousIndex()
     {
-        return previousPositions.Pop();
+        return previousIndexs.Pop();
     }
 
     /// <summary>
     /// Returns top of previousPositions
     /// </summary>
     /// <returns></returns>
-    public Vector2 PeekPreviousPositions()
+    public int PeekPreviousIndex()
     {
-        return previousPositions.Peek();
+        return previousIndexs.Peek();
     }
 }
