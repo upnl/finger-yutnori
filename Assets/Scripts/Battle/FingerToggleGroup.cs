@@ -18,7 +18,7 @@ public class FingerToggleGroup : MonoBehaviour
         
     }
     
-    //Toggle이 선택되지 않았을 경우 False를 반환
+    //false when any toggle isn't selected
     public bool IsToggleClicked()
     {
         if(SelectedFinger < 0)
