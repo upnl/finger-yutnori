@@ -99,6 +99,8 @@ public class PrepareButtonManager : MonoBehaviour
             button.gameObject.SetActive (false);
             buttonPool.Enqueue(button);
         }
+
+        activeButtonList.Clear();
     }
 
     public IEnumerator ActiveMoveButtons(Token curToken)
@@ -165,5 +167,7 @@ public class PrepareButtonManager : MonoBehaviour
             button.gameObject.SetActive(false);
             moveButtonPool.Enqueue(button);
         }
+
+        activeMoveButtonList.Clear();
     }
 }
