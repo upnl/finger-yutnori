@@ -39,12 +39,13 @@ public enum boardPointIndex
 
 public class TokenManager : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> boardPoints;
+    [SerializeField] private PrepareManager prepareManager;
+    public List<GameObject> boardPoints;
 
     [SerializeField] private GameObject tokenPrefab1, tokenPrefab2;
     [SerializeField] private List<Vector2> initialPositions1, initialPositions2;
 
-    private List<Token> tokens1, tokens2;
+    public List<Token> tokens1, tokens2;
 
     private void Start()
     {
@@ -62,23 +63,18 @@ public class TokenManager : MonoBehaviour
             tokens2.Add(newToken.GetComponent<Token>());
         }
 
-        ResetToken(tokens1[0]);
-    }
-
-    private void Update()
-    {
-        if (GetBoardPointIndex(tokens1[0]) == -1) return;
-        DebugHandleInput();
+        StartCoroutine(ResetTokenAndCreateButtons(tokens1[0]));
     }
 
     /// <summary>
     /// Clears previousPositions of token and moves it to lowerRightPoint
     /// </summary>
-    /// <param name="token"></param>
-    private void ResetToken(Token token)
+    /// <param name="token"></param> 
+    private IEnumerator ResetTokenAndCreateButtons(Token token)
     {
         token.ClearPreviousPositions();
-        StartCoroutine(token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]));
+        yield return token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]);
+        prepareManager.CreateButtons();
     }
 
     /// <summary>
@@ -86,7 +82,7 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    private int GetBoardPointIndex(Token token)
+    public int GetBoardPointIndex(Token token)
     {
         for (int index = 0; index < boardPoints.Count; index++)
         {
@@ -174,6 +170,14 @@ public class TokenManager : MonoBehaviour
             Vector2 nextPosition = GetNextPosition(token, (i == 0) ? true : false);
             token.RecordPosition();
             yield return token.MoveTo(nextPosition);
+            if (token.IsTokenAt(boardPoints[0]))
+            {
+                token.IsFinished = true;
+                Vector2 finishedPosition = boardPoints[(int)boardPointIndex.LowerRight].transform.position;
+                finishedPosition.y -= 15f;
+                yield return token.MoveTo(finishedPosition);
+                break;
+            }
         }
     }
 
@@ -182,38 +186,20 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     /// <param name="token"></param>
     /// <param name="distance"></param>
-    private void StartMove(Token token, int distance)
+    private IEnumerator StartMove(Token token, int distance)
     {
-        if (token.IsFinished) return;
-        if (distance < 0 && token.CountPreviousPositions() == 0) return;
-        StartCoroutine(MoveToken(token, distance));
+        if (token.IsFinished) ;
+        else if (distance < 0 && token.CountPreviousPositions() == 0) ;
+        else yield return MoveToken(token, distance);
     }
 
     /// <summary>
     /// A debug function that handles keyboard input
     /// </summary>
-    private void DebugHandleInput()
+    public IEnumerator DebugHandleInput(int steps)
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            StartMove(tokens1[0], 1);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            StartMove(tokens1[0], 2);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            StartMove(tokens1[0], 3);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            StartMove(tokens1[0], -1);
-            return;
-        }
+        yield return StartMove(tokens1[0], steps);
+        prepareManager.DestroyButtons();
+        prepareManager.CreateButtons();
     }
 }
