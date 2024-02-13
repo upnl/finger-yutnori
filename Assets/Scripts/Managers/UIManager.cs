@@ -22,16 +22,16 @@ public class UIManager : MonoBehaviour
     public GameObject TargetPlayer0Done;
     public GameObject TargetPlayer1Done;
     public GameObject TargetCanvas;
-    public GameObject WaitForResult;
-    public GameObject ResultCanvas;
-    public GameObject WinnerText;
-    public GameObject LoserText;
-    public GameObject WinnerImage;
-    public GameObject LoserImage;
+    [SerializeField] private GameObject WaitForResult;
+    [SerializeField] private GameObject ResultCanvas;
+    [SerializeField] private GameObject WinnerText;
+    [SerializeField] private GameObject LoserText;
+    [SerializeField] private GameObject WinnerImage;
+    [SerializeField] private GameObject LoserImage;
     
-    public int player1result;
-    public int player2result;
-    public bool TotalDraw;
+    public int player1result { get; private set; }
+    public int player2result { get; private set; }
+    public bool TotalDraw { get; private set; }
     //These are the variables that are needed to be taken to another scenes(Results of this scenes).
     //TotalDraw becomes true when players draw 3 times. Then you don't need to use int results
 
@@ -60,14 +60,12 @@ public class UIManager : MonoBehaviour
                 TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
                 player1selection = fingerToggleGroup.SelectedFinger;
                 Player1Image = Buttons[fingerToggleGroup.SelectedFinger].GetComponentInChildren<Image>().sprite;
-                
             }
             else if (curPlayer == 1)
             {
-                TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
+                WaitForResult.transform.position = TargetCanvas.transform.position;
                 player2selection = fingerToggleGroup.SelectedFinger;
                 Player2Image = Buttons[fingerToggleGroup.SelectedFinger].GetComponentInChildren<Image>().sprite;
-                
             }
             curPlayer = (curPlayer == 0) ? 1 : 0;
 
@@ -84,15 +82,6 @@ public class UIManager : MonoBehaviour
         TargetPlayer0Done.transform.position = new Vector3(2000, 0, 0);
     }
 
-    /// <summary>
-    /// set the position of "Player1Done" to (2000,0,0)
-    /// then set the position of "WaitForResult" to targetcanvas
-    /// </summary>
-    public void OnClickPlayer1DOneButton()
-    {
-        TargetPlayer1Done.transform.position = new Vector3(2000, 0, 0);
-        WaitForResult.transform.position = TargetCanvas.transform.position;
-    }
     /// <summary>
     /// set the position of "WaitForResult" to (3000, 0, 0)
     /// prepare for resultcanvas, changing texts and images
@@ -192,6 +181,7 @@ public class UIManager : MonoBehaviour
         {
             if(drawcount == 2)
             {
+                drawcount = 0;
                 return 5;
             }
             drawcount++;
@@ -199,13 +189,9 @@ public class UIManager : MonoBehaviour
         }
         if ((player0 == 0)||(player1 == 0))
         {
-            if((sub > 3)||(sub<0))
+            if((sub>3)||((sub<0)&&(sub>-4)))
             {
                 return 2;
-            }
-            else if(sub == 0)
-            {
-                return 4;
             }
             else
             {
@@ -220,6 +206,5 @@ public class UIManager : MonoBehaviour
         {
             return 1;
         }
-        return -1;
     }
 }
