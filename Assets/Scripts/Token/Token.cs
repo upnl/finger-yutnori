@@ -8,7 +8,7 @@ public class Token : MonoBehaviour
 {
     private bool _canFinish;        // False before first move
     private int _routeType;   // 0: right->upper->left->lower / 1: right->upper->leftDiag
-                             // 2: right->rightDiag->lower   / 3: right->rightDiag->leftDiag
+                              // 2: right->rightDiag->lower   / 3: right->rightDiag->leftDiag
     private BoardPointIndex _boardPointIndex;
 
     public bool canFinish { get => _canFinish; set => _canFinish = value; }
