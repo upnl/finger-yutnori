@@ -39,12 +39,13 @@ public enum boardPointIndex
 
 public class TokenManager : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> boardPoints;
+    [SerializeField] private PrepareButtonManager prepareButtonManager;
+    public List<GameObject> boardPoints;
 
     [SerializeField] private GameObject tokenPrefab1, tokenPrefab2;
-    [SerializeField] private List<Vector2> initialPositions1, initialPositions2;
+    public List<Vector2> initialPositions1, initialPositions2;
 
-    private List<Token> tokens1, tokens2;
+    public List<Token> tokens1, tokens2;
 
     private void Start()
     {
@@ -62,13 +63,15 @@ public class TokenManager : MonoBehaviour
             tokens2.Add(newToken.GetComponent<Token>());
         }
 
-        ResetToken(tokens1[0]);
+        prepareButtonManager.GetInfo();
+        prepareButtonManager.ActivePrepareButtons();
+        //ResetToken(tokens1[0]); PRE
     }
 
     private void Update()
     {
-        if (GetBoardPointIndex(tokens1[0]) == -1) return;
-        DebugHandleInput();
+        //if (GetBoardPointIndex(tokens1[0]) == -1) return; PRE
+        //DebugHandleInput(); PRE
     }
 
     /// <summary>
@@ -86,7 +89,7 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    private int GetBoardPointIndex(Token token)
+    public int GetBoardPointIndex(Token token)
     {
         for (int index = 0; index < boardPoints.Count; index++)
         {
@@ -192,7 +195,7 @@ public class TokenManager : MonoBehaviour
     /// <summary>
     /// A debug function that handles keyboard input
     /// </summary>
-    private void DebugHandleInput()
+    public void GetTokenSteps(Token curToken, int steps) // PRE : DebugHandleInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -215,5 +218,6 @@ public class TokenManager : MonoBehaviour
             StartMove(tokens1[0], -1);
             return;
         }
+        StartMove(curToken, steps);
     }
 }
