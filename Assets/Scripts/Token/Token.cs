@@ -6,23 +6,20 @@ using System.Collections;
 
 public class Token : MonoBehaviour
 {
-    private bool _canFinish;        // Whether the token can finish on the next turn
-    private bool _isFinished;       // Whether the token has completed a lap
-    private bool _isFromLeftDiag;   // Whether the token came to center from leftDiag
-    private Vector2 _initialPosition;
-    private Vector2 _previousPosition;
+    private bool _canFinish;        // False before first move
+    private int _routeType;   // 0: right->upper->left->lower / 1: right->upper->leftDiag
+                             // 2: right->rightDiag->lower   / 3: right->rightDiag->leftDiag
+    private BoardPointIndex _boardPointIndex;
 
     public bool canFinish { get => _canFinish; set => _canFinish = value; }
-    public bool isFinished { get => _isFinished; set => _isFinished = value; }
-    public bool isFromLeftDiag { get => _isFromLeftDiag; set => _isFromLeftDiag = value; }
-    public Vector2 initialPosition { get => _initialPosition; set => _initialPosition = value; }
-    public Vector2 previousPosition { get => _previousPosition; set => _previousPosition = value; }
+    public int routeType { get => _routeType; set => _routeType = value; }
+    public BoardPointIndex boardPointIndex { get => _boardPointIndex; set => _boardPointIndex = value; }
 
     private void Awake()
     {
         _canFinish = false;
-        _isFinished = false;
-        _isFromLeftDiag = false;
+        _routeType = 0;
+        _boardPointIndex = BoardPointIndex.Initial;
     }
 
     private void Update()
