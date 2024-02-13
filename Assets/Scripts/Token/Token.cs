@@ -6,15 +6,23 @@ using System.Collections;
 
 public class Token : MonoBehaviour
 {
-    private bool isFinished;    /// Whether the token has completed a lap
-    private Stack<Vector2> previousPositions;     /// Stores the token's previous positions for backward movement
+    private bool _canFinish;        // Whether the token can finish on the next turn
+    private bool _isFinished;       // Whether the token has completed a lap
+    private bool _isFromLeftDiag;   // Whether the token came to center from leftDiag
+    private Vector2 _initialPosition;
+    private Vector2 _previousPosition;
 
-    public bool IsFinished { get; set; }
+    public bool canFinish { get => _canFinish; set => _canFinish = value; }
+    public bool isFinished { get => _isFinished; set => _isFinished = value; }
+    public Vector2 initialPosition { get => _initialPosition; set => _initialPosition = value; }
+    public Vector2 previousPosition { get => _previousPosition; set => _previousPosition = value; }
+    public bool isFromLeftDiag { get => _isFromLeftDiag; set => _isFromLeftDiag = value; }
 
     private void Awake()
     {
-        isFinished = false;
-        previousPositions = new Stack<Vector2>();
+        _canFinish = false;
+        _isFinished = false;
+        _isFromLeftDiag = false;
     }
 
     private void Update()
@@ -41,7 +49,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to newPosition smoothly; Use with StartCoroutine()
+    /// Moves token to newPosition smoothly and records previous position; Use with StartCoroutine()
     /// </summary>
     /// <param name="newPosition"></param>
     public IEnumerator MoveTo(Vector2 newPosition)
@@ -50,7 +58,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to boardPoint smoothly; Use with StartCoroutine()
+    /// Moves token to boardPoint smoothly and records previous position; Use with StartCoroutine()
     /// </summary>
     /// <param name="boardPoint"></param>
     public IEnumerator MoveTo(GameObject boardPoint)
@@ -76,41 +84,5 @@ public class Token : MonoBehaviour
     public bool IsTokenAt(GameObject boardPoint)
     {
         return IsTokenAt(boardPoint.transform.position);
-    }
-
-    public void ClearPreviousPositions()
-    {
-        previousPositions.Clear();
-    }
-
-    /// <summary>
-    /// Pushes Token's current position into previousPositions
-    /// </summary>
-    public void RecordPosition()
-    {
-        previousPositions.Push(transform.position);
-    }
-
-    public int CountPreviousPositions()
-    {
-        return previousPositions.Count;
-    }
-
-    /// <summary>
-    /// Pops and returns top of previousPositions
-    /// </summary>
-    /// <returns></returns>
-    public Vector2 PopPreviousPositions()
-    {
-        return previousPositions.Pop();
-    }
-
-    /// <summary>
-    /// Returns top of previousPositions
-    /// </summary>
-    /// <returns></returns>
-    public Vector2 PeekPreviousPositions()
-    {
-        return previousPositions.Peek();
     }
 }

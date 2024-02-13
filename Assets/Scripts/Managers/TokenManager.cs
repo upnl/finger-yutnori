@@ -43,6 +43,7 @@ public class TokenManager : MonoBehaviour
 
     [SerializeField] private GameObject tokenPrefab1, tokenPrefab2;
     [SerializeField] private List<Vector2> initialPositions1, initialPositions2;
+    [SerializeField] private Vector2 finishedPosition; // TODO: Make an actual finishing position or animation?
 
     private List<Token> tokens1, tokens2;
 
@@ -53,16 +54,20 @@ public class TokenManager : MonoBehaviour
 
         for (int i = 0; i < initialPositions1.Count; i++)
         {
-            var newToken = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
-            tokens1.Add(newToken.GetComponent<Token>());
+            var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
+            Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.initialPosition = initialPositions1[i];
+            tokens1.Add(newToken);
         }
-        for (int i = 0; i < initialPositions1.Count; i++)
+        for (int i = 0; i < initialPositions2.Count; i++)
         {
-            var newToken = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
-            tokens2.Add(newToken.GetComponent<Token>());
+            var newTokenObject = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
+            Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.initialPosition = initialPositions2[i];
+            tokens2.Add(newToken);
         }
 
-        ResetToken(tokens1[0]);
+        ResetToken(tokens1[0]); // TODO: When player selects token, reset that token and then move it
     }
 
     private void Update()
@@ -72,13 +77,13 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Clears previousPositions of token and moves it to lowerRightPoint
+    /// Moves token to lowerRightPoint and resets previousPosition
     /// </summary>
     /// <param name="token"></param>
     private void ResetToken(Token token)
     {
-        token.ClearPreviousPositions();
         StartCoroutine(token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]));
+        token.previousPosition = token.initialPosition;
     }
 
     /// <summary>
@@ -96,7 +101,8 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the next position that token has to go to from current position
+    /// Gets the next position that token has to go to from current position;
+    /// Set isFirstMove to true for the first move of the turn
     /// </summary>
     /// <param name="token"></param>
     /// <param name="isFirstMove"></param>
@@ -104,19 +110,9 @@ public class TokenManager : MonoBehaviour
     private Vector2 GetNextPosition(Token token, bool isFirstMove)
     {
         int index = GetBoardPointIndex(token);
-        if (index == -1) return Vector2.zero;
-        if (index == (int)boardPointIndex.LowerRight && 
-            token.CountPreviousPositions() != 0 && (
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.Lower4].transform.position ||
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag4].transform.position))
-        {
-            token.IsFinished = true;
-            Vector2 finishedPosition = boardPoints[(int)boardPointIndex.LowerRight].transform.position;
-            finishedPosition.y -= 15f;
-            return finishedPosition;
-        }
-
-        if (isFirstMove)
+        if (index == -1) return token.initialPosition; // Exception: token not on any boardPoint
+        if (token.canFinish) return finishedPosition;
+        if (isFirstMove) // Only on the first move of the turn
         {
             if (index == (int)boardPointIndex.UpperRight)
             {
@@ -132,9 +128,11 @@ public class TokenManager : MonoBehaviour
             }
         }
         if (index == (int)boardPointIndex.Center &&
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag2].transform.position)
+            token.previousPosition == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag2].transform.position)
+            // When token is at centralPoint and the previous position was upper left point of centralPoint
         {
             return boardPoints[(int)boardPointIndex.LeftDiag3].transform.position;
+            // Move to lower right point of centralPoint
         }
         if (index == (int)boardPointIndex.LeftDiag2)
         {
@@ -156,6 +154,53 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Gets the next position to go to from the current position, but backwards
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private Vector2 GetNextPositionBackward(Token token)
+    {
+        if (token.previousPosition != token.initialPosition) // When previousPosition is recorded
+        {
+            Vector2 nextPosition = token.previousPosition;
+            token.previousPosition = token.initialPosition;
+            return nextPosition;
+        }
+        // Else: when previousPosition is initialPosition
+        int index = GetBoardPointIndex(token);
+        if (index == -1) return token.initialPosition; // Exception: token not on any boardPoint
+        if (index == (int)boardPointIndex.LowerRight) // when index is zero
+            return boardPoints[(int)boardPointIndex.Lower4].transform.position;
+        if (index == (int)boardPointIndex.RightDiag1)
+            return boardPoints[(int)boardPointIndex.UpperRight].transform.position;
+        if (index == (int)boardPointIndex.LeftDiag1)
+            return boardPoints[(int)boardPointIndex.UpperLeft].transform.position;
+        if (index == (int)boardPointIndex.LeftDiag3)
+        {
+            token.isFromLeftDiag = true;
+            return boardPoints[(int)boardPointIndex.Center].transform.position;
+        }
+        if (index == (int)boardPointIndex.Center && token.isFromLeftDiag)
+        {
+            token.isFromLeftDiag = false;
+            return boardPoints[(int)boardPointIndex.LeftDiag2].transform.position;
+        }
+        return boardPoints[index - 1].transform.position;
+    }
+
+    /// <summary>
+    /// Checks if token can finish on the next turn after it moves to nextPosition
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="nextPosition"></param>
+    private void CheckCanFinish(Token token, Vector2 nextPosition)
+    {
+        if (nextPosition == (Vector2)boardPoints[(int)boardPointIndex.LowerRight].transform.position)
+            token.canFinish = true;
+        else token.canFinish = false;
+    }
+
+    /// <summary>
     /// Actually moves token according to GetNextPosition(); Use with StartCoroutine()
     /// </summary>
     /// <param name="token"></param>
@@ -163,17 +208,22 @@ public class TokenManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator MoveToken(Token token, int distance)
     {
+        Vector2 nextPosition;
         if (distance < 0)
         {
-            if (token.CountPreviousPositions() == 0) yield return null;
-            yield return token.MoveTo(token.PopPreviousPositions());
+            nextPosition = GetNextPositionBackward(token);
+            CheckCanFinish(token, nextPosition);
+            yield return token.MoveTo(nextPosition);
         }
 
         for (int i = 0; i < distance; i++)
         {
-            Vector2 nextPosition = GetNextPosition(token, (i == 0) ? true : false);
-            token.RecordPosition();
+            nextPosition = GetNextPosition(token, (i == 0) ? true : false);
+            token.previousPosition = token.transform.position;
+            CheckCanFinish(token, nextPosition);
+            if (nextPosition == finishedPosition) token.isFinished = true;
             yield return token.MoveTo(nextPosition);
+            if (token.isFinished) break;
         }
     }
 
@@ -184,8 +234,7 @@ public class TokenManager : MonoBehaviour
     /// <param name="distance"></param>
     private void StartMove(Token token, int distance)
     {
-        if (token.IsFinished) return;
-        if (distance < 0 && token.CountPreviousPositions() == 0) return;
+        if (token.isFinished) return;
         StartCoroutine(MoveToken(token, distance));
     }
 
