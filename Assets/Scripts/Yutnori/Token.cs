@@ -7,6 +7,7 @@ using System.Collections;
 public class Token : MonoBehaviour
 {
     private bool isFinished;    /// Whether the token has completed a lap
+    public Vector2 initialPosition;
     public Stack<Vector2> previousPositions;     /// Stores the token's previous positions for backward movement
 
     public bool IsFinished { get; set; }
@@ -86,9 +87,9 @@ public class Token : MonoBehaviour
     /// <summary>
     /// Pushes Token's current position into previousPositions
     /// </summary>
-    public void RecordPosition()
+    public void RecordPosition(Vector2 previousPosition)
     {
-        previousPositions.Push(transform.position);
+        previousPositions.Push(previousPosition);
     }
 
     public int CountPreviousPositions()

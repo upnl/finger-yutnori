@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
@@ -54,34 +55,21 @@ public class TokenManager : MonoBehaviour
 
         for (int i = 0; i < initialPositions1.Count; i++)
         {
-            var newToken = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
+            var newToken = Instantiate<GameObject>(tokenPrefab1).GetComponent<Token>();
+            newToken.initialPosition = initialPositions1[i];
+            newToken.transform.position = newToken.initialPosition;
             tokens1.Add(newToken.GetComponent<Token>());
         }
         for (int i = 0; i < initialPositions1.Count; i++)
         {
-            var newToken = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
+            var newToken = Instantiate<GameObject>(tokenPrefab2).GetComponent<Token>();
+            newToken.initialPosition = initialPositions2[i];
+            newToken.transform.position = newToken.initialPosition;
             tokens2.Add(newToken.GetComponent<Token>());
         }
 
         prepareButtonManager.GetInfo();
         prepareButtonManager.ActivePrepareButtons();
-        //ResetToken(tokens1[0]); PRE
-    }
-
-    private void Update()
-    {
-        //if (GetBoardPointIndex(tokens1[0]) == -1) return; PRE
-        //DebugHandleInput(); PRE
-    }
-
-    /// <summary>
-    /// Clears previousPositions of token and moves it to lowerRightPoint
-    /// </summary>
-    /// <param name="token"></param>
-    private void ResetToken(Token token)
-    {
-        token.ClearPreviousPositions();
-        StartCoroutine(token.MoveTo(boardPoints[(int)boardPointIndex.LowerRight]));
     }
 
     /// <summary>
@@ -98,86 +86,88 @@ public class TokenManager : MonoBehaviour
         return -1;
     }
 
-    /// <summary>
-    /// Gets the next position that token has to go to from current position
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="isFirstMove"></param>
-    /// <returns>nextPosition; if finished, finishedPosition</returns>
-    private Vector2 GetNextPosition(Token token, bool isFirstMove)
+    public IEnumerator CheckFinish(Token curToken)
     {
-        int index = GetBoardPointIndex(token);
-        if (index == -1) return Vector2.zero;
-        if (index == (int)boardPointIndex.LowerRight && 
-            token.CountPreviousPositions() != 0 && (
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.Lower4].transform.position ||
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag4].transform.position))
+        if (curToken.IsTokenAt(boardPoints[0]))
         {
-            token.IsFinished = true;
-            Vector2 finishedPosition = boardPoints[(int)boardPointIndex.LowerRight].transform.position;
-            finishedPosition.y -= 15f;
-            return finishedPosition;
+            curToken.IsFinished = true;
+            curToken.ClearPreviousPositions();
+            yield return curToken.MoveTo(curToken.initialPosition);
         }
-
-        if (isFirstMove)
-        {
-            if (index == (int)boardPointIndex.UpperRight)
-            {
-                return boardPoints[(int)boardPointIndex.RightDiag1].transform.position;
-            }
-            else if (index == (int)boardPointIndex.UpperLeft)
-            {
-                return boardPoints[(int)boardPointIndex.LeftDiag1].transform.position;
-            }
-            else if (index == (int)boardPointIndex.Center)
-            {
-                return boardPoints[(int)boardPointIndex.LeftDiag3].transform.position;
-            }
-        }
-        if (index == (int)boardPointIndex.Center &&
-            token.PeekPreviousPositions() == (Vector2)boardPoints[(int)boardPointIndex.LeftDiag2].transform.position)
-        {
-            return boardPoints[(int)boardPointIndex.LeftDiag3].transform.position;
-        }
-        if (index == (int)boardPointIndex.LeftDiag2)
-        {
-            return boardPoints[(int)boardPointIndex.Center].transform.position;
-        }
-        if (index == (int)boardPointIndex.LeftDiag4)
-        {
-            return boardPoints[(int)boardPointIndex.LowerRight].transform.position;
-        }
-        if (index == (int)boardPointIndex.RightDiag4)
-        {
-            return boardPoints[(int)boardPointIndex.LowerLeft].transform.position;
-        }
-        if (index == (int)boardPointIndex.Lower4)
-        {
-            return boardPoints[(int)boardPointIndex.LowerRight].transform.position;
-        }
-        return boardPoints[index + 1].transform.position;
     }
-
+    
     /// <summary>
     /// Actually moves token according to GetNextPosition(); Use with StartCoroutine()
     /// </summary>
     /// <param name="token"></param>
     /// <param name="distance"></param>
     /// <returns></returns>
-    private IEnumerator MoveToken(Token token, int distance)
+    private IEnumerator MoveToken(Token token, int steps)
     {
-        if (distance < 0)
+        List<int> tokenIndexList = GetTokenIndexList(token, steps);
+        foreach (int tokenIndex in tokenIndexList)
         {
-            if (token.CountPreviousPositions() == 0) yield return null;
-            yield return token.MoveTo(token.PopPreviousPositions());
+            yield return token.MoveTo(boardPoints[tokenIndex]);
         }
 
-        for (int i = 0; i < distance; i++)
+        StartCoroutine(CheckFinish(token));
+
+        prepareButtonManager.GetInfo();
+        prepareButtonManager.ActivePrepareButtons();
+    }
+
+    private List<int> GetTokenIndexList(Token curToken, int steps)
+    {
+        List<int> tokenIndexList = new();
+
+        int curTokenIndex = GetBoardPointIndex(curToken);
+
+        int tokenIndex;
+
+        if (steps == -1)
         {
-            Vector2 nextPosition = GetNextPosition(token, (i == 0) ? true : false);
-            token.RecordPosition();
-            yield return token.MoveTo(nextPosition);
+            if (curToken.CountPreviousPositions() == 0)
+            {
+                int wayGOIndex = prepareButtonManager.wayGo.LastIndexOf(curTokenIndex);
+                tokenIndex = prepareButtonManager.wayGo[wayGOIndex - 1];
+            }
+            else
+            {
+                Vector2 previousPosition = curToken.PopPreviousPositions();
+                tokenIndex = prepareButtonManager.GetBoardPointIndex(previousPosition);
+            }
+
+            tokenIndexList.Add(tokenIndex);
         }
+        else
+        {
+            List<int> wayList = new();
+
+            if (0 <= curTokenIndex && curTokenIndex <= 4) wayList = prepareButtonManager.wayUp;
+            else if (6 <= curTokenIndex && curTokenIndex <= 9) wayList = prepareButtonManager.wayLeft;
+            else if (11 <= curTokenIndex && curTokenIndex <= 14) wayList = prepareButtonManager.wayDown;
+            else if (15 <= curTokenIndex && curTokenIndex <= 19) wayList = prepareButtonManager.wayRight;
+            else if (prepareButtonManager.wayLeftDiag.Contains(curTokenIndex)) wayList = prepareButtonManager.wayLeftDiag;
+            else if (prepareButtonManager.wayRightDiag.Contains(curTokenIndex)) wayList = prepareButtonManager.wayRightDiag;
+
+            int wayListIndex = wayList.IndexOf(curTokenIndex);
+
+            List<int> stepsList = new() { 1, 2, 3, 4, 5 };
+            for (int i = 0; i < steps; i++)
+            {
+                tokenIndex = wayList[wayListIndex + stepsList[i]];
+                
+                tokenIndexList.Add(tokenIndex);
+            }
+
+            curToken.RecordPosition(curToken.transform.position);
+            for (int i = 0; i < steps - 1; i++)
+            {
+                curToken.RecordPosition(boardPoints[tokenIndexList[i]].transform.position);
+            }
+        }
+
+        return tokenIndexList;
     }
 
     /// <summary>
@@ -185,39 +175,8 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     /// <param name="token"></param>
     /// <param name="distance"></param>
-    private void StartMove(Token token, int distance)
+    public void StartMove(Token curToken, int steps)
     {
-        if (token.IsFinished) return;
-        if (distance < 0 && token.CountPreviousPositions() == 0) return;
-        StartCoroutine(MoveToken(token, distance));
-    }
-
-    /// <summary>
-    /// A debug function that handles keyboard input
-    /// </summary>
-    public void GetTokenSteps(Token curToken, int steps) // PRE : DebugHandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            StartMove(tokens1[0], 1);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            StartMove(tokens1[0], 2);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            StartMove(tokens1[0], 3);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            StartMove(tokens1[0], -1);
-            return;
-        }
-        StartMove(curToken, steps);
+        StartCoroutine(MoveToken(curToken, steps));
     }
 }
