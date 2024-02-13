@@ -6,7 +6,7 @@ public class PrepareButton : MonoBehaviour
 {
     public PrepareButtonManager prepareButtonManager;
 
-    public Token thisToken;
+    public Token thisToken; // token to move
 
     public void ClickPrepareButton()
     {

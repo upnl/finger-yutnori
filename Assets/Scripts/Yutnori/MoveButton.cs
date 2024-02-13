@@ -6,8 +6,8 @@ public class MoveButton : MonoBehaviour
 {
     public PrepareButtonManager prepareButtonManager;
 
-    public Token thisToken;
-    public int steps;
+    public Token thisToken; // token to move
+    public int steps; // how to move
 
     public void ClickMoveButton()
     {

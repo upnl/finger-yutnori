@@ -23,6 +23,7 @@ public class PrepareButtonManager : MonoBehaviour
     private List<Token> curTokenList;
     private List<Vector2> curInitialPositionList;
 
+    // way direction reference : start direction, way indexs : consider that max steps is 5
     private List<int> wayGo = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                                     11, 12, 13, 14, 15, 16, 17, 18, 19, 0 };
     private List<int> wayUp = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -32,6 +33,9 @@ public class PrepareButtonManager : MonoBehaviour
     private List<int> wayLeftDiag = new() { 10, 25, 26, 22, 27, 28, 0, 0, 0, 0, 0 };
     private List<int> wayRightDiag = new() { 5, 20, 21, 22, 23, 24, 15, 16, 17, 18, 19 };
 
+    /// <summary>
+    /// create 2 buttonPool and 2 activeButtonList (PrepareButton and MoveButton)
+    /// </summary>
     private void Start()
     {
         GetInfo();
@@ -57,6 +61,9 @@ public class PrepareButtonManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// use After curPlayer changes or token moves
+    /// </summary>
     public void GetInfo()
     {
         curPlayer = 0;
@@ -64,15 +71,21 @@ public class PrepareButtonManager : MonoBehaviour
         curInitialPositionList = (curPlayer == 0) ? tokenManager.initialPositions1 : tokenManager.initialPositions2;
     }
 
-    public int GetBoardPointIndex(Token token, Vector2 tokenPosition)
+    /// <summary>
+    /// get board point index with position
+    /// </summary>
+    public int GetBoardPointIndex(Vector2 position)
     {
         for (int index = 0; index < tokenManager.boardPoints.Count; index++)
         {
-            if (token.IsTokenAt(tokenPosition)) return index;
+            if (position == (Vector2) tokenManager.boardPoints[index].transform.position) return index;
         }
         return -1;
     }
 
+    /// <summary>
+    /// use in OnClick() in PrepareButton.prefab
+    /// </summary>
     public void ClickPrepareButton(Token curToken)
     {
         StartCoroutine(ClickPrepareButtonCoroutine(curToken));
@@ -87,6 +100,9 @@ public class PrepareButtonManager : MonoBehaviour
         ActiveMoveButtons(curToken);
     }
 
+    /// <summary>
+    /// use in OnClick() in MoveButton.prefab
+    /// </summary>
     public void ClickMoveButton(Token curToken, int steps)
     {
         DeactiveMoveButtons();
@@ -96,12 +112,15 @@ public class PrepareButtonManager : MonoBehaviour
         //ActivePrepareButtons();
     }
     
+    /// <summary>
+    /// active PrepareButtons
+    /// </summary>
     public void ActivePrepareButtons()
     {
         List<int> prepareButtonIndexList = GetPrepareButtonIndexList();
         for (int i = 0; i < prepareButtonIndexList.Count; i++)
         {
-            if (prepareButtonIndexList[i] != -2)
+            if (prepareButtonIndexList[i] != -2) // if (-2) that token is finished
             {
                 ActivePrepareButton(i, prepareButtonIndexList[i]);
             }
@@ -120,7 +139,7 @@ public class PrepareButtonManager : MonoBehaviour
         foreach (Token curToken in curTokenList)
         {
             if (curToken.IsFinished == false) buttonIndexList.Add(tokenManager.GetBoardPointIndex(curToken));
-            else buttonIndexList.Add(-2);
+            else buttonIndexList.Add(-2); // don't active button for curToken
         }
 
         return buttonIndexList;
@@ -140,6 +159,9 @@ public class PrepareButtonManager : MonoBehaviour
         activePrepareButtonList.Add(prepareButton);
     }
 
+    /// <summary>
+    /// deactive PrepareButtons
+    /// </summary>
     public void DeactivePrepareButtons()
     {
         foreach(PrepareButton prepareButton in activePrepareButtonList)
@@ -151,9 +173,13 @@ public class PrepareButtonManager : MonoBehaviour
         activePrepareButtonList.Clear();
     }
     
+    /// <summary>
+    /// active MoveButtons
+    /// </summary>
+    /// <param name="curToken"></param>
     public void ActiveMoveButtons(Token curToken)
     {
-        List<int> stepsList = new() { -1, 1, 2, 3, 4, 5 };
+        List<int> stepsList = new() { -1, 1, 2, 3, 4, 5 }; // steps is how to move
         List<int> moveButtonIndexList = GetMoveButtonIndexList(curToken);
         for (int i = 0; i < moveButtonIndexList.Count; i++)
         {
@@ -169,15 +195,15 @@ public class PrepareButtonManager : MonoBehaviour
 
         int buttonIndex;
 
-        if (curToken.CountPreviousPositions() == 0)
+        if (curToken.CountPreviousPositions() == 0) // Go back longest way
         {
             int wayGoIndex = wayGo.LastIndexOf(curTokenIndex);
             buttonIndex = wayGo[wayGoIndex - 1];
         }
-        else
+        else // Go to previous position
         {
             Vector2 previousPosition = curToken.PeekPreviousPositions();
-            buttonIndex = GetBoardPointIndex(curToken, previousPosition);
+            buttonIndex = GetBoardPointIndex(previousPosition);
         }
 
         buttonIndexList.Add(buttonIndex);
@@ -197,7 +223,7 @@ public class PrepareButtonManager : MonoBehaviour
         foreach (int steps in stepsList)
         {
             buttonIndex = wayList[wayListIndex + steps];
-            if (!buttonIndexList.Contains(buttonIndex))
+            if (!buttonIndexList.Contains(buttonIndex)) // active 1 button in 1 position
             {
                 buttonIndexList.Add(buttonIndex);
             }
@@ -220,6 +246,9 @@ public class PrepareButtonManager : MonoBehaviour
         activeMoveButtonList.Add(moveButton);
     }
 
+    /// <summary>
+    /// deactive MoveButtons
+    /// </summary>
     public void DeactiveMoveButtons()
     {
         foreach (MoveButton moveButton in activeMoveButtonList)
