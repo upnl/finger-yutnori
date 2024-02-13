@@ -14,9 +14,9 @@ public class Token : MonoBehaviour
 
     public bool canFinish { get => _canFinish; set => _canFinish = value; }
     public bool isFinished { get => _isFinished; set => _isFinished = value; }
+    public bool isFromLeftDiag { get => _isFromLeftDiag; set => _isFromLeftDiag = value; }
     public Vector2 initialPosition { get => _initialPosition; set => _initialPosition = value; }
     public Vector2 previousPosition { get => _previousPosition; set => _previousPosition = value; }
-    public bool isFromLeftDiag { get => _isFromLeftDiag; set => _isFromLeftDiag = value; }
 
     private void Awake()
     {
