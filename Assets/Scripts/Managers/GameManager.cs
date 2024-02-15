@@ -4,7 +4,11 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance { get; private set;}	
 
-    
+	
+	public GameStateManager GameStateManager { get; private set; }
+
+	public Player player1;
+	public Player player2;
 
 
     void Awake()
@@ -17,9 +21,16 @@ public class GameManager : MonoBehaviour
 
 	    Instance = this;
     }
-    void Start()
+    
+    void Start() 
     {
-        
+	    player1.playerName = PlayerPrefs.GetString("player1Name");
+	    player1.playerHand = PlayerPrefs.GetString("player1Hand");
+	    
+	    player2.playerName = PlayerPrefs.GetString("player2Name");
+	    player2.playerHand = PlayerPrefs.GetString("player2Hand");
+
+	    GameStateManager = GetComponentInChildren<GameStateManager>();
     }
 
     // Update is called once per frame
