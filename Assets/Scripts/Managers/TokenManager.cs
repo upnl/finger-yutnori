@@ -189,10 +189,12 @@ public class TokenManager : MonoBehaviour
         }
         else if (token.boardPointIndex == BoardPointIndex.RightDiag1)
         {
+            token.routeType = 0;
             yield return MoveTokenTo(token, BoardPointIndex.UpperRight);
         }
         else if (token.boardPointIndex == BoardPointIndex.LeftDiag1)
         {
+            token.routeType = 0;
             yield return MoveTokenTo(token, BoardPointIndex.UpperLeft);
         }
         else if (token.boardPointIndex == BoardPointIndex.LeftDiag3)
