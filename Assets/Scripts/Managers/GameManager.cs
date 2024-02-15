@@ -4,7 +4,8 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance { get; private set;}	
 
-	public BattleManager BattleManager { get; private set; }
+	
+	public GameStateManager GameStateManager { get; private set; }
 
 	public Player player1;
 	public Player player2;
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour
 	    player2.playerName = PlayerPrefs.GetString("player2Name");
 	    player2.playerHand = PlayerPrefs.GetString("player2Hand");
 
-	    BattleManager = GetComponentInChildren<BattleManager>();
+	    GameStateManager = GetComponentInChildren<GameStateManager>();
     }
 
     // Update is called once per frame
