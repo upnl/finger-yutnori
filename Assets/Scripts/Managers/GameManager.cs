@@ -4,7 +4,10 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance { get; private set;}	
 
-    
+	public BattleManager BattleManager { get; private set; }
+
+	public Player player1;
+	public Player player2;
 
 
     void Awake()
@@ -17,9 +20,17 @@ public class GameManager : MonoBehaviour
 
 	    Instance = this;
     }
-    void Start()
+    void Start() 
     {
-        
+	    player1 = gameObject.AddComponent<Player>();
+	    player1.playerName = PlayerPrefs.GetString("player1Name");
+	    player1.playerHand = PlayerPrefs.GetString("player1Hand");
+	    
+	    player2 = gameObject.AddComponent<Player>();
+	    player2.playerName = PlayerPrefs.GetString("player2Name");
+	    player2.playerHand = PlayerPrefs.GetString("player2Hand");
+
+	    BattleManager = GetComponentInChildren<BattleManager>();
     }
 
     // Update is called once per frame
