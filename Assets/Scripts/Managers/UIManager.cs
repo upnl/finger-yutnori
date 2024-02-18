@@ -53,6 +53,10 @@ public class UIManager : MonoBehaviour
             {
                 GameManager.Instance.player1.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
+
+                TargetPlayer0Done.transform.Find("Text").GetComponent<TMP_Text>().text
+                    = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이 손가락을 선택합니다." ;
+
             }
             else if (curPlayer == 1)
             {
