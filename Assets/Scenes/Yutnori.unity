@@ -1458,6 +1458,7 @@ MonoBehaviour:
   - {fileID: 1853000956}
   tokenPrefab1: {fileID: 1033905997015866053, guid: 51c5ea11405bda541a80fe278a8c5f9b, type: 3}
   tokenPrefab2: {fileID: 864976361006012577, guid: d5fdb2da38a490c42a5c8377b4e21186, type: 3}
+  emptyTokenPrefab: {fileID: 7124735917412138256, guid: 02f0fe28a38caa14da146aabb2e4774d, type: 3}
   initialPositions1:
   - {x: -30, y: -75}
   - {x: -10, y: -75}
@@ -1468,6 +1469,7 @@ MonoBehaviour:
   - {x: -10, y: 75}
   - {x: 10, y: 75}
   - {x: 30, y: 75}
+  finishedPosition: {x: 50, y: -60}
 --- !u!4 &1678223111
 Transform:
   m_ObjectHideFlags: 0
