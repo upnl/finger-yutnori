@@ -196,6 +196,7 @@ public class TokenManager : MonoBehaviour
                 token.canFinish = true;
                 break;
             case BoardPointIndex.RightDiag1:
+            case BoardPointIndex.RightDiag3:
                 token.routeType = 2;
                 break;
             case BoardPointIndex.LeftDiag1:
@@ -218,6 +219,7 @@ public class TokenManager : MonoBehaviour
                 token.canFinish = true;
                 break;
             case BoardPointIndex.RightDiag1:
+            case BoardPointIndex.RightDiag3:
                 token.routeType = 2;
                 break;
             case BoardPointIndex.LeftDiag1:
