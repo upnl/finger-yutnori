@@ -6,18 +6,23 @@ using System.Collections;
 
 public class Token : MonoBehaviour
 {
-    private bool _canFinish;        // False before first move
+    private bool _canFinish;  // false before moving out of lowerRightPoint
+    private bool _hasLooped;  // true if token has reached lowerRightPoint with forward movement
     private int _routeType;   // 0: right->upper->left->lower / 1: right->upper->leftDiag
                               // 2: right->rightDiag->lower   / 3: right->rightDiag->leftDiag
     private BoardPointIndex _boardPointIndex;
+    private Vector2 _initialPosition;
 
     public bool canFinish { get => _canFinish; set => _canFinish = value; }
+    public bool hasLooped { get => _hasLooped; set => _hasLooped = value; }
     public int routeType { get => _routeType; set => _routeType = value; }
     public BoardPointIndex boardPointIndex { get => _boardPointIndex; set => _boardPointIndex = value; }
+    public Vector2 initialPosition { get => _initialPosition; set => _initialPosition = value; }
 
     private void Awake()
     {
         _canFinish = false;
+        _hasLooped = false;
         _routeType = 0;
         _boardPointIndex = BoardPointIndex.Initial;
     }
