@@ -1,18 +1,45 @@
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    
     public FingerToggleGroup fingerToggleGroup;
-
+    
+    [SerializeField] private TMP_Text playerText;
     [SerializeField] private List<Toggle> Buttons;
 
     public GameObject TargetPlayer0Done;
     public GameObject TargetPlayer1Done;
     public GameObject TargetCanvas;
 
+    private GameStateManager _gameStateManager;
+
     int curPlayer = 0;
+
+    void Start()
+    {
+        _gameStateManager = GameManager.Instance.GameStateManager;
+    }
+
+    private void Update()
+    {
+        switch (_gameStateManager.GameState)
+        {
+            case GameState.Player1Turn:
+                playerText.text = GameManager.Instance.player1.playerName;
+                break;
+            case GameState.Player2Turn:
+                playerText.text = GameManager.Instance.player2.playerName;
+                break;
+            default:
+                playerText.text = "";
+                break;
+        }
+    }
 
     /// <summary>
     /// Depending on curpPlayer, set "Player0Done" or "Player1Done" to match Canvas and change curPlayer.
@@ -24,31 +51,43 @@ public class UIManager : MonoBehaviour
         {
             if (curPlayer == 0)
             {
+                GameManager.Instance.player1.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
+
+                TargetPlayer0Done.transform.Find("Text").GetComponent<TMP_Text>().text
+                    = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이 손가락을 선택합니다." ;
+
             }
             else if (curPlayer == 1)
             {
+                GameManager.Instance.player2.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
             }
             curPlayer = (curPlayer == 0) ? 1 : 0;
-
             Buttons[fingerToggleGroup.SelectedFinger].isOn = false;
         }
     }
 
     /// <summary>
     /// set the position of "Player0Done" to (2000,0,0)
+    /// change state to player2Turn
     /// </summary>
     public void OnClickPlayer0DoneButton()
     {
         TargetPlayer0Done.transform.position = new Vector3(2000, 0, 0);
+        _gameStateManager.turnToPlayer2();
     }
 
     /// <summary>
     /// set the position of "Player1Done" to (2000,0,0)
+    /// change state to BattleResult
     /// </summary>
     public void OnClickPlayer1DOneButton()
     {
         TargetPlayer1Done.transform.position = new Vector3(2000, 0, 0);
+        _gameStateManager.showBattleResult();
+        //Debug.Log(GameManager.Instance.player1.latestChoice);
+        //Debug.Log(GameManager.Instance.player2.latestChoice);
     }
+    
 }

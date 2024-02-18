@@ -4,29 +4,33 @@ using UnityEngine.SceneManagement;
 
 public enum GameState
 {
-    ready,
-    running,
-    finished
+    Player1Turn,
+    Player2Turn,
+    BattleResult,
+    MovToken,
+    End
 }
 
 
 public class GameStateManager : MonoBehaviour
 {
-    public GameState gameState { get; private set; }
+    public GameState GameState { get; private set; }
 
-    public void PrepareGame()
+    public void turnToPlayer2()
     {
-        gameState = GameState.running;
+        GameState = GameState.Player2Turn;
     }
-    
+
+    public void showBattleResult()
+    {
+        GameState = GameState.BattleResult;
+    }
     
     void Start()
     {
+        GameState = GameState.Player1Turn;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+    
 }

@@ -38,14 +38,13 @@ public class LoginManager : MonoBehaviour
 		
 		if (player2ToggleGroup.ActiveToggles().FirstOrDefault() == null) player2Hand = "LeftHand";
 		else player2Hand = player2ToggleGroup.ActiveToggles().FirstOrDefault().name;
-		
 		//플레이어가 선택한 손을 받아온다.
 
 
-		string player1Name = player1InputField.transform.Find("InputPlayer").GetComponent<TMP_InputField>().text;
+		player1Name = player1InputField.transform.Find("InputPlayerName").GetComponent<TMP_InputField>().text;
 		if (player1Name.Equals("")) player1Name = "현명한 청년";
-		string player2Name = player2InputField.transform.Find("InputPlayer").GetComponent<TMP_InputField>().text;
-		if (player1Name.Equals("")) player2Name = "멍청한 감자칩";
+		player2Name = player2InputField.transform.Find("InputPlayerName").GetComponent<TMP_InputField>().text;
+		if (player2Name.Equals("")) player2Name = "멍청한 감자칩";
 		//inputfield에 입력받은 플레이어의 이름을 받아온다.
 		
 		PlayerPrefs.SetString("player1Name", player1Name);

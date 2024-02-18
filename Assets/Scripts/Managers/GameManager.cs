@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance { get; private set;}	
 
-	
+	public UIManager UIManager { get; private set; }
 	public GameStateManager GameStateManager { get; private set; }
 
 	public Player player1;
@@ -20,9 +20,12 @@ public class GameManager : MonoBehaviour
 	    }
 
 	    Instance = this;
+	    
+	    GameStateManager = GetComponentInChildren<GameStateManager>();
+	    UIManager = GetComponentInChildren<UIManager>();
     }
     
-    void Start() 
+    void Start() //시작할 때 사용자의 정보를 받아온다.
     {
 	    player1.playerName = PlayerPrefs.GetString("player1Name");
 	    player1.playerHand = PlayerPrefs.GetString("player1Hand");
@@ -30,7 +33,7 @@ public class GameManager : MonoBehaviour
 	    player2.playerName = PlayerPrefs.GetString("player2Name");
 	    player2.playerHand = PlayerPrefs.GetString("player2Hand");
 
-	    GameStateManager = GetComponentInChildren<GameStateManager>();
+	    
     }
 
     // Update is called once per frame
@@ -38,4 +41,6 @@ public class GameManager : MonoBehaviour
     {
         
     }
+    
+    
 }
