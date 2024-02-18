@@ -51,10 +51,12 @@ public class UIManager : MonoBehaviour
         {
             if (curPlayer == 0)
             {
+                GameManager.Instance.player1.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer0Done.transform.position = TargetCanvas.transform.position;
             }
             else if (curPlayer == 1)
             {
+                GameManager.Instance.player2.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
             }
             curPlayer = (curPlayer == 0) ? 1 : 0;
@@ -70,8 +72,6 @@ public class UIManager : MonoBehaviour
     {
         TargetPlayer0Done.transform.position = new Vector3(2000, 0, 0);
         _gameStateManager.turnToPlayer2();
-        //Debug.Log(_gameStateManager.GameState);
-        //Debug.Log(GameManager.Instance.player2.playerName);
     }
 
     /// <summary>
@@ -82,6 +82,8 @@ public class UIManager : MonoBehaviour
     {
         TargetPlayer1Done.transform.position = new Vector3(2000, 0, 0);
         _gameStateManager.showBattleResult();
+        //Debug.Log(GameManager.Instance.player1.latestChoice);
+        //Debug.Log(GameManager.Instance.player2.latestChoice);
     }
     
 }
