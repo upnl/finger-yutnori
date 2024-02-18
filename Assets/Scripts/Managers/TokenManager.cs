@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public enum BoardPointIndex
@@ -76,7 +75,13 @@ public class TokenManager : MonoBehaviour
         DebugHandleInput();
     }
 
-    private IEnumerator MoveTokenTo(Token token, BoardPointIndex boardPointIndex)
+    /// <summary>
+    /// Moves token to boardPointIndex and sets token.boardPointIndex to boardPointIndex
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="boardPointIndex"></param>
+    /// <returns></returns>
+    public IEnumerator MoveTokenTo(Token token, BoardPointIndex boardPointIndex)
     {
         token.boardPointIndex = boardPointIndex;
         if (boardPointIndex == BoardPointIndex.Finished)
@@ -87,10 +92,10 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to lowerRightPoint and resets previousPosition
+    /// Moves token to lowerRightPoint and resets canFinish and routeType
     /// </summary>
     /// <param name="token"></param>
-    private void ResetToken(Token token)
+    public void ResetToken(Token token)
     {
         token.canFinish = false;
         token.routeType = 0;
@@ -98,122 +103,120 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Gets the next position that token has to go to from current position;
+    /// Gets the next BoardPointIndex to go to from boardPointIndex;
     /// Set isFirstMove to true for the first move of the turn
     /// </summary>
     /// <param name="token"></param>
     /// <param name="isFirstMove"></param>
-    /// <returns>nextPosition; if finished, finishedPosition</returns>
-    private IEnumerator MoveTokenByOne(Token token, bool isFirstMove)
+    /// <returns></returns>
+    public BoardPointIndex GetNextIndex(BoardPointIndex boardPointIndex, int routeType, bool canFinish, bool isFirstMove)
     {
-        if (token.boardPointIndex == BoardPointIndex.LowerRight)
+        if (boardPointIndex == BoardPointIndex.LowerRight)
         {
-            if (token.canFinish)
-                yield return MoveTokenTo(token, BoardPointIndex.Finished);
-            else
-            {
-                token.canFinish = true;
-                yield return MoveTokenTo(token, BoardPointIndex.Right1);
-            }
+            if (canFinish) return BoardPointIndex.Finished;
+            return BoardPointIndex.Right1;
         }
-        else
+        if (isFirstMove)
         {
-            if (isFirstMove) // Only on the first move of the turn
-            {
-                if (token.boardPointIndex == BoardPointIndex.UpperRight)
-                {
-                    token.routeType = 2;
-                    yield return MoveTokenTo(token, BoardPointIndex.RightDiag1);
-                }
-                else if (token.boardPointIndex == BoardPointIndex.UpperLeft)
-                {
-                    token.routeType = 1;
-                    yield return MoveTokenTo(token, BoardPointIndex.LeftDiag1);
-                }
-                else if (token.boardPointIndex == BoardPointIndex.Center)
-                {
-                    if (token.routeType == 2) // From rightDiag
-                    {
-                        token.routeType = 3;
-                    }
-                    yield return MoveTokenTo(token, BoardPointIndex.LeftDiag3);
-                }
-                else yield return MoveTokenByOne(token, false);
-            }
-            else if (token.boardPointIndex == BoardPointIndex.Center && token.routeType == 1)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LeftDiag3);
-            }
-            else if (token.boardPointIndex == BoardPointIndex.LeftDiag2)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.Center);
-            }
-            else if (token.boardPointIndex == BoardPointIndex.LeftDiag4)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
-            }
-            else if (token.boardPointIndex == BoardPointIndex.RightDiag4)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LowerLeft);
-            }
-            else if (token.boardPointIndex == BoardPointIndex.Lower4)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
-            }
-            else yield return MoveTokenTo(token, token.boardPointIndex + 1);
+            if (boardPointIndex == BoardPointIndex.UpperRight) return BoardPointIndex.RightDiag1;
+            if (boardPointIndex == BoardPointIndex.UpperLeft) return BoardPointIndex.LeftDiag1;
+            if (boardPointIndex == BoardPointIndex.Center) return BoardPointIndex.Center;
         }
+        if (boardPointIndex == BoardPointIndex.Center && routeType == 1) return BoardPointIndex.LeftDiag3;
+        if (boardPointIndex == BoardPointIndex.LeftDiag2) return BoardPointIndex.Center;
+        if (boardPointIndex == BoardPointIndex.LeftDiag4) return BoardPointIndex.LowerRight;
+        if (boardPointIndex == BoardPointIndex.RightDiag4) return BoardPointIndex.LowerLeft;
+        if (boardPointIndex == BoardPointIndex.Lower4) return BoardPointIndex.LowerRight;
+        return boardPointIndex + 1;
     }
 
     /// <summary>
-    /// Gets the next position to go to from the current position, but backwards
+    /// Gets the next BoardPointIndex that token has to go to from current position;
+    /// Set isFirstMove to true for the first move of the turn
     /// </summary>
     /// <param name="token"></param>
+    /// <param name="isFirstMove"></param>
     /// <returns></returns>
-    private IEnumerator MoveTokenByOneBackwards(Token token)
+    public BoardPointIndex GetNextIndex(Token token, bool isFirstMove)
     {
         if (token.boardPointIndex == BoardPointIndex.LowerRight)
         {
-            if (token.routeType == 1 || token.routeType == 3)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LeftDiag4);
-            }
-            else yield return MoveTokenTo(token, BoardPointIndex.Lower4);
+            if (token.canFinish) return BoardPointIndex.Finished;
+            return BoardPointIndex.Right1;
         }
-        else if (token.boardPointIndex == BoardPointIndex.LowerLeft)
+        if (isFirstMove)
         {
-            if (token.routeType == 0)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.Left4);
-            }
-            else yield return MoveTokenTo(token, BoardPointIndex.RightDiag4);
+            if (token.boardPointIndex == BoardPointIndex.UpperRight) return BoardPointIndex.RightDiag1;
+            if (token.boardPointIndex == BoardPointIndex.UpperLeft) return BoardPointIndex.LeftDiag1;
+            if (token.boardPointIndex == BoardPointIndex.Center) return BoardPointIndex.LeftDiag3;
         }
-        else if (token.boardPointIndex == BoardPointIndex.RightDiag1)
-        {
-            token.routeType = 0;
-            yield return MoveTokenTo(token, BoardPointIndex.UpperRight);
-        }
-        else if (token.boardPointIndex == BoardPointIndex.LeftDiag1)
-        {
-            token.routeType = 0;
-            yield return MoveTokenTo(token, BoardPointIndex.UpperLeft);
-        }
-        else if (token.boardPointIndex == BoardPointIndex.LeftDiag3)
-        {
-            yield return MoveTokenTo(token, BoardPointIndex.Center);
-        }
-        else if (token.boardPointIndex == BoardPointIndex.Center)
-        {
-            if (token.routeType == 1)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.LeftDiag2);
-            }
-            else if (token.routeType == 2 || token.routeType == 3)
-            {
-                yield return MoveTokenTo(token, BoardPointIndex.RightDiag2);
-            }
-        }
-        else yield return MoveTokenTo(token, token.boardPointIndex - 1);
+        if (token.boardPointIndex == BoardPointIndex.Center && token.routeType == 1) return BoardPointIndex.LeftDiag3;
+        if (token.boardPointIndex == BoardPointIndex.LeftDiag2) return BoardPointIndex.Center;
+        if (token.boardPointIndex == BoardPointIndex.LeftDiag4) return BoardPointIndex.LowerRight;
+        if (token.boardPointIndex == BoardPointIndex.RightDiag4) return BoardPointIndex.LowerLeft;
+        if (token.boardPointIndex == BoardPointIndex.Lower4) return BoardPointIndex.LowerRight;
+        return token.boardPointIndex + 1;
     }
+
+    /// <summary>
+    /// Gets the next BoardPointIndex to go to from the current position, but backwards
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public BoardPointIndex GetPreviousIndex(Token token)
+    {
+        if (token.boardPointIndex == BoardPointIndex.LowerRight)
+        {
+            if (token.routeType == 1 || token.routeType == 3) return BoardPointIndex.LeftDiag4;
+            return BoardPointIndex.Lower4;
+        }
+        if (token.boardPointIndex == BoardPointIndex.LowerLeft)
+        {
+            if (token.routeType == 0) return BoardPointIndex.Left4;
+            return BoardPointIndex.RightDiag4;
+        }
+        if (token.boardPointIndex == BoardPointIndex.RightDiag1) return BoardPointIndex.UpperRight;
+        if (token.boardPointIndex == BoardPointIndex.LeftDiag1) return BoardPointIndex.UpperLeft;
+        if (token.boardPointIndex == BoardPointIndex.LeftDiag3) return BoardPointIndex.Center;
+        if (token.boardPointIndex == BoardPointIndex.Center)
+        {
+            if (token.routeType == 1) return BoardPointIndex.LeftDiag2;
+            return BoardPointIndex.RightDiag2;
+        }
+        return token.boardPointIndex - 1;
+    }
+
+    public IEnumerator MoveTokenByOne(Token token, bool isFirstMove)
+    {
+        int previousRouteType = token.routeType;
+        BoardPointIndex nextBoardPointIndex = GetNextIndex(token, isFirstMove);
+        switch (nextBoardPointIndex)
+        {
+            case BoardPointIndex.Right1:
+                token.canFinish = true;
+                break;
+            case BoardPointIndex.RightDiag1:
+                token.routeType = 2;
+                break;
+            case BoardPointIndex.LeftDiag1:
+                token.routeType = 1;
+                break;
+            case BoardPointIndex.LeftDiag3:
+                if (previousRouteType == 2) token.routeType = 3;
+                break;
+        }
+        yield return MoveTokenTo(token, nextBoardPointIndex);
+    }
+    
+    public IEnumerator MoveTokenByOneBackwards(Token token)
+    {
+        BoardPointIndex previousBoardPointIndex = GetPreviousIndex(token);
+        if (previousBoardPointIndex == BoardPointIndex.UpperRight || previousBoardPointIndex == BoardPointIndex.UpperLeft)
+            token.routeType = 0;
+        yield return MoveTokenTo(token, previousBoardPointIndex);
+    }
+
+
 
     /// <summary>
     /// Actually moves token by distance using MoveTokenByOne();
