@@ -190,7 +190,7 @@ public class PrepareManager : MonoBehaviour
             }
             else if (curTokenIndex == 0)
             {
-                if (token.hasLooped == true) wayList = new() { 0, 30, 30, 30, 30, 30 }; // if token has looped, go Finished index
+                if (token.canFinish == true) wayList = new() { 0, 30, 30, 30, 30, 30 }; // if token has looped, go Finished index
                 else wayList = new() { 0, 1, 2, 3, 4, 5 }; // if token has returned from Right1, go up from LowerRight index
             }
             else
