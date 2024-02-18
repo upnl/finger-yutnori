@@ -46,7 +46,7 @@ public class TokenManager : MonoBehaviour
     [SerializeField] private List<Vector2> initialPositions1, initialPositions2;
     [SerializeField] private Vector2 finishedPosition; // TODO: Make an actual finishing position or animation?
 
-    private List<Token> tokens1, tokens2;
+    public List<Token> tokens1, tokens2;
 
     private void Start()
     {
