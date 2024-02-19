@@ -88,7 +88,6 @@ public class TokenManager : MonoBehaviour
 
     private void Update()
     {
-        if (tokens1[0].boardPointIndex == BoardPointIndex.Finished) return;
         DebugHandleInput();
     }
 
