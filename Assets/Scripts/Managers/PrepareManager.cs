@@ -162,56 +162,10 @@ public class PrepareManager : MonoBehaviour
 
     private Vector2 GetMoveButtonPosition(Token token, int steps)
     {
-        Vector2 moveButtonPosition;
+        BoardPointIndex moveButtonIndex = tokenManager.GetIndexAfterMove(token,steps);
 
-        if (steps == -1)
-        {
-            BoardPointIndex buttonBoardPointIndex;
+        Vector2 moveButtonPotition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
 
-            buttonBoardPointIndex = tokenManager.GetPreviousIndex(token);
-
-            if (buttonBoardPointIndex == BoardPointIndex.Initial)
-            {
-                moveButtonPosition = token.initialPosition;
-            }
-            else
-            {
-                moveButtonPosition = tokenManager.boardPoints[(int)buttonBoardPointIndex].transform.position;
-            }
-        }
-        else
-        {
-            int curTokenIndex = (int)token.boardPointIndex;
-
-            List<int> wayList = new();
-            if (curTokenIndex == 29) // token is in Initial index
-            {
-                wayList = new() { 29, 1, 2, 3, 4, 5 }; // go up from LowerRight index
-            }
-            else if (curTokenIndex == 0)
-            {
-                if (token.canFinish == true) wayList = new() { 0, 30, 30, 30, 30, 30 }; // if token has looped, go Finished index
-                else wayList = new() { 0, 1, 2, 3, 4, 5 }; // if token has returned from Right1, go up from LowerRight index
-            }
-            else
-            {
-                List<int> wayGo = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 30, 30, 30, 30, 30 }; // longest way
-                List<int> wayLeftDiag = new() { 10, 25, 26, 22, 27, 28, 0, 30, 30, 30, 30, 30 }; // left diag way
-                List<int> wayRightDiag = new() { 5, 20, 21, 22, 23, 24, 15, 16, 17, 18, 19 }; // right diag way
-
-                if (wayLeftDiag.Contains(curTokenIndex)) wayList = wayLeftDiag;
-                else if (wayRightDiag.Contains(curTokenIndex)) wayList = wayRightDiag;
-                else wayList = wayGo;
-            }
-
-            int wayListIndex = wayList.IndexOf(curTokenIndex);
-
-            int buttonIndex = wayList[wayListIndex + steps];
-
-            if (buttonIndex == 30) moveButtonPosition = tokenManager.finishedPosition;
-            else moveButtonPosition = tokenManager.boardPoints[buttonIndex].transform.position;
-        }
-
-        return moveButtonPosition;
+        return moveButtonPotition;
     }
 }

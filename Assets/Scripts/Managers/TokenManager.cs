@@ -356,6 +356,7 @@ public class TokenManager : MonoBehaviour
         {
             readyToKeyNumber = false;
             readyToButton = true;
+
             if (Input.GetKeyDown(KeyCode.Alpha1)) steps = 1;
             else if (Input.GetKeyDown(KeyCode.Alpha2)) steps = 2;
             else if (Input.GetKeyDown(KeyCode.Alpha3)) steps = 3;
