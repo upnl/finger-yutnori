@@ -375,7 +375,7 @@ public class TokenManager : MonoBehaviour
         {
             readyToButton = false;
 
-            prepareManager.ActivePrepareButtons(winPlayer, steps);
+            prepareManager.ActivatePrepareButtons(winPlayer, steps);
         }
     }
 
@@ -386,14 +386,14 @@ public class TokenManager : MonoBehaviour
 
     public void OnClickPrepareButton(PrepareButton prepareButton, Token token, int steps)
     {
-        prepareManager.DeactiveMoveButtons();
+        prepareManager.DeactivateMoveButtons();
 
         if (selectedPrepareButton == prepareButton) selectedPrepareButton = null; // select selected prepareButton
         else
         {
             selectedPrepareButton = prepareButton;
 
-            prepareManager.ActiveMoveButton(token, steps);
+            prepareManager.ActivateMoveButton(token, steps);
         }
     }
 
@@ -401,8 +401,8 @@ public class TokenManager : MonoBehaviour
     {
         readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
 
-        prepareManager.DeactivePrepareButtons();
-        prepareManager.DeactiveMoveButtons();
+        prepareManager.DeactivatePrepareButtons();
+        prepareManager.DeactivateMoveButtons();
 
         selectedPrepareButton = null;
 

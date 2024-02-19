@@ -68,7 +68,7 @@ public class PrepareManager : MonoBehaviour
         }
     }
 
-    public void ActivePrepareButtons(int player, int steps)
+    public void ActivatePrepareButtons(int player, int steps)
     {
         List<Token> winTokens = (player == 1) ? tokenManager.tokens1 : tokenManager.tokens2; // get winplayer tokens
 
@@ -85,14 +85,14 @@ public class PrepareManager : MonoBehaviour
             else
             {
                 prepareButtonPosition = prepareButtonPositionList[i];
-                ActivePrepareButton(winToken, prepareButtonPosition, steps);
+                ActivatePrepareButton(winToken, prepareButtonPosition, steps);
             }
         }
 
         if (activePrepareButtonList.Count == 0) tokenManager.FailActivePrepareButton(); // no token able to move
     }
 
-    private void ActivePrepareButton(Token token, Vector2 position, int steps)
+    private void ActivatePrepareButton(Token token, Vector2 position, int steps)
     {
         PrepareButton prepareButton = prepareButtonPool.Dequeue();
 
@@ -105,7 +105,7 @@ public class PrepareManager : MonoBehaviour
         activePrepareButtonList.Add(prepareButton);
     }
 
-    public void ActiveMoveButton(Token token, int steps)
+    public void ActivateMoveButton(Token token, int steps)
     {
         Vector2 moveButtonPosition = GetMoveButtonPosition(token, steps);
 
@@ -120,7 +120,7 @@ public class PrepareManager : MonoBehaviour
         activeMoveButtonList.Add(moveButton);
     }
 
-    public void DeactivePrepareButtons()
+    public void DeactivatePrepareButtons()
     {
         foreach (PrepareButton activePrepareButton in activePrepareButtonList)
         {
@@ -132,7 +132,7 @@ public class PrepareManager : MonoBehaviour
         activePrepareButtonList.Clear();
     }
 
-    public void DeactiveMoveButtons()
+    public void DeactivateMoveButtons()
     {
         foreach (MoveButton activeMoveButton in activeMoveButtonList)
         {
