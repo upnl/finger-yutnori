@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class MoveButton : MonoBehaviour
 {
-    public TokenManager tokenManager;
-
     public Token thisToken;
     public int steps;
 
     public void OnClickMoveButton()
     {
+        TokenManager tokenManager = GameObject.Find("TokenManager").GetComponent<TokenManager>();
+
         tokenManager.OnClickMoveButton(thisToken, steps);
     }
 }

@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PrepareButton : MonoBehaviour
 {
-    public TokenManager tokenManager;
-
     public Token thisToken;
     public int steps;
 
     public void OnClickPrepareButton()
     {
+        TokenManager tokenManager = GameObject.Find("TokenManager").GetComponent<TokenManager>();
+
         tokenManager.OnClickPrepareButton(this, thisToken, steps);
     }
 }

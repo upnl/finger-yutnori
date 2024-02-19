@@ -45,7 +45,6 @@ public class PrepareManager : MonoBehaviour
 
             newPrepareButton.transform.SetParent(buttons.transform);
             newPrepareButton.transform.localScale = Vector3.one;
-            newPrepareButton.tokenManager = tokenManager;
 
             newPrepareButton.gameObject.SetActive(false);
 
@@ -62,7 +61,6 @@ public class PrepareManager : MonoBehaviour
 
             newMoveButton.transform.SetParent(buttons.transform);
             newMoveButton.transform.localScale = Vector3.one;
-            newMoveButton.tokenManager = tokenManager;
 
             newMoveButton.gameObject.SetActive(false);
 
@@ -74,7 +72,7 @@ public class PrepareManager : MonoBehaviour
     {
         List<Token> winTokens = (player == 1) ? tokenManager.tokens1 : tokenManager.tokens2; // get winplayer tokens
 
-        List<Vector2> prepareButtonPositionList = GetPrepareButtonPositionList(winTokens, player);
+        List<Vector2> prepareButtonPositionList = GetPrepareButtonPositionList(winTokens);
 
         Token winToken;
         Vector2 prepareButtonPosition;
@@ -84,11 +82,14 @@ public class PrepareManager : MonoBehaviour
 
             if (winToken.boardPointIndex == BoardPointIndex.Finished) continue;
             else if (steps == -1 && winToken.boardPointIndex == BoardPointIndex.Initial) continue;
-            prepareButtonPosition = prepareButtonPositionList[i];
-            ActivePrepareButton(winToken, prepareButtonPosition, steps);
+            else
+            {
+                prepareButtonPosition = prepareButtonPositionList[i];
+                ActivePrepareButton(winToken, prepareButtonPosition, steps);
+            }
         }
 
-        if (activePrepareButtonList.Count == 0) tokenManager.FailAcitivePrepareButton(); // no token able to move
+        if (activePrepareButtonList.Count == 0) tokenManager.FailActivePrepareButton(); // no token able to move
     }
 
     private void ActivePrepareButton(Token token, Vector2 position, int steps)
@@ -143,7 +144,7 @@ public class PrepareManager : MonoBehaviour
         activeMoveButtonList.Clear();
     }
 
-    private List<Vector2> GetPrepareButtonPositionList(List<Token> winTokens, int player)
+    private List<Vector2> GetPrepareButtonPositionList(List<Token> winTokens)
     {
         List<Vector2> prepareButtonPositionList = new();
 
@@ -162,14 +163,14 @@ public class PrepareManager : MonoBehaviour
 
     private Vector2 GetMoveButtonPosition(Token token, int steps)
     {
-        Vector2 moveButtonPotition;
+        Vector2 moveButtonPosition;
 
         BoardPointIndex moveButtonIndex = tokenManager.GetIndexAfterMove(token,steps);
 
-        if (moveButtonIndex == BoardPointIndex.Initial) moveButtonPotition = token.initialPosition;
-        else if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPotition = tokenManager.finishedPosition;
-        else moveButtonPotition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
+        if (moveButtonIndex == BoardPointIndex.Initial) moveButtonPosition = token.initialPosition;
+        else if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPosition = tokenManager.finishedPosition;
+        else moveButtonPosition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
 
-        return moveButtonPotition;
+        return moveButtonPosition;
     }
 }

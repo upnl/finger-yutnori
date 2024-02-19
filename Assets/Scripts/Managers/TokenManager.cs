@@ -380,7 +380,7 @@ public class TokenManager : MonoBehaviour
         }
     }
 
-    public void FailAcitivePrepareButton() // when steps is -1 and there are no tokens able to move
+    public void FailActivePrepareButton() // when steps is -1 and there are no tokens able to move
     {
         readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
     }
