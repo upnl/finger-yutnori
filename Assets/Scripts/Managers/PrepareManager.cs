@@ -166,7 +166,8 @@ public class PrepareManager : MonoBehaviour
 
         BoardPointIndex moveButtonIndex = tokenManager.GetIndexAfterMove(token,steps);
 
-        if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPotition = tokenManager.finishedPosition;
+        if (moveButtonIndex == BoardPointIndex.Initial) moveButtonPotition = token.initialPosition;
+        else if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPotition = tokenManager.finishedPosition;
         else moveButtonPotition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
 
         return moveButtonPotition;
