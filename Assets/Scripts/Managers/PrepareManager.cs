@@ -162,9 +162,12 @@ public class PrepareManager : MonoBehaviour
 
     private Vector2 GetMoveButtonPosition(Token token, int steps)
     {
+        Vector2 moveButtonPotition;
+
         BoardPointIndex moveButtonIndex = tokenManager.GetIndexAfterMove(token,steps);
 
-        Vector2 moveButtonPotition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
+        if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPotition = tokenManager.finishedPosition;
+        else moveButtonPotition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
 
         return moveButtonPotition;
     }

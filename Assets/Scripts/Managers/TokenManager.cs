@@ -293,6 +293,7 @@ public class TokenManager : MonoBehaviour
         }
         BoardPointIndex boardPointIndex = tempToken.boardPointIndex;
         Destroy(tempTokenObject);
+
         return boardPointIndex;
     }
 
