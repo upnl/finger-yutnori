@@ -40,13 +40,23 @@ public enum BoardPointIndex
 
 public class TokenManager : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> boardPoints;
+    [SerializeField] private PrepareManager prepareManager;
+
+    public List<GameObject> boardPoints;
 
     [SerializeField] private GameObject tokenPrefab1, tokenPrefab2, emptyTokenPrefab;
-    [SerializeField] private List<Vector2> initialPositions1, initialPositions2;
-    [SerializeField] private Vector2 finishedPosition; // TODO: Make an actual finishing position or animation?
+    public List<Vector2> initialPositions1, initialPositions2;
+    public Vector2 finishedPosition; // TODO: Make an actual finishing position or animation?
 
     public List<Token> tokens1, tokens2;
+
+    private int winPlayer;
+
+    private bool readyToKeyPlayer = true;
+    private bool readyToKeyNumber = false;
+    private bool readyToButton = false;
+
+    private PrepareButton selectedPrepareButton = null;
 
     private void Start()
     {
@@ -57,6 +67,7 @@ public class TokenManager : MonoBehaviour
         {
             var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions1[i];
             tokens1.Add(newToken);
         }
@@ -64,16 +75,19 @@ public class TokenManager : MonoBehaviour
         {
             var newTokenObject = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions2[i];
             tokens2.Add(newToken);
         }
 
-        StartCoroutine(ResetToken(tokens1[0])); // TODO: When player selects token, reset that token and then move it
+        foreach (Token token1 in tokens1) StartCoroutine(ResetToken(token1)); // reset tokens1
+        foreach (Token token2 in tokens2) StartCoroutine(ResetToken(token2)); // reset tokens2
+
+        prepareManager.ResetSettings();
     }
 
     private void Update()
     {
-        if (tokens1[0].boardPointIndex == BoardPointIndex.Finished) return;
         DebugHandleInput();
     }
 
@@ -208,6 +222,7 @@ public class TokenManager : MonoBehaviour
         }
         yield return MoveTokenTo(token, nextBoardPointIndex);
     }
+
     public void InstantMoveTokenByOne(Token token, bool isFirstMove)
     {
         int previousRouteType = token.routeType;
@@ -277,6 +292,7 @@ public class TokenManager : MonoBehaviour
         }
         BoardPointIndex boardPointIndex = tempToken.boardPointIndex;
         Destroy(tempTokenObject);
+
         return boardPointIndex;
     }
 
@@ -320,26 +336,76 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     private void DebugHandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        int steps = 0;
+
+        if (readyToKeyPlayer)
         {
-            StartMove(tokens1[0], 1);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            StartMove(tokens1[0], 2);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            StartMove(tokens1[0], 3);
-            return;
+            readyToKeyPlayer = false;
+            readyToKeyNumber = true;
+
+            if (Input.GetKeyDown(KeyCode.A)) winPlayer = 1;
+            else if (Input.GetKeyDown(KeyCode.B)) winPlayer = 2;
+            else // if A or B is not pressed, restore settings
+            {
+                readyToKeyPlayer = true;
+                readyToKeyNumber = false;
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha0))
+        if (readyToKeyNumber)
         {
-            StartMove(tokens1[0], -1);
-            return;
+            readyToKeyNumber = false;
+            readyToButton = true;
+
+            if (Input.GetKeyDown(KeyCode.Alpha1)) steps = 1;
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) steps = 2;
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) steps = 3;
+            else if (Input.GetKeyDown(KeyCode.Alpha4)) steps = 4;
+            else if (Input.GetKeyDown(KeyCode.Alpha5)) steps = 5;
+            else if (Input.GetKeyDown(KeyCode.Alpha0)) steps = -1;
+            else // if 0 ~ 5 is not pressed, restore settings
+            {
+                readyToKeyNumber = true;
+                readyToButton = false;
+            }
         }
+        
+
+        if (readyToButton == true)
+        {
+            readyToButton = false;
+
+            prepareManager.ActivatePrepareButtons(winPlayer, steps);
+        }
+    }
+
+    public void FailActivePrepareButton() // when steps is -1 and there are no tokens able to move
+    {
+        readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
+    }
+
+    public void OnClickPrepareButton(PrepareButton prepareButton, Token token, int steps)
+    {
+        prepareManager.DeactivateMoveButtons();
+
+        if (selectedPrepareButton == prepareButton) selectedPrepareButton = null; // select selected prepareButton
+        else
+        {
+            selectedPrepareButton = prepareButton;
+
+            prepareManager.ActivateMoveButton(token, steps);
+        }
+    }
+
+    public void OnClickMoveButton(Token token, int steps)
+    {
+        readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
+
+        prepareManager.DeactivatePrepareButtons();
+        prepareManager.DeactivateMoveButtons();
+
+        selectedPrepareButton = null;
+
+        StartMove(token, steps);
     }
 }
