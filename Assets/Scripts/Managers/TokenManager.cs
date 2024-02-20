@@ -338,6 +338,7 @@ public class TokenManager : MonoBehaviour
         var tempTokenObject = Instantiate<GameObject>(emptyTokenPrefab, token.transform.position, Quaternion.identity);
         Token tempToken = tempTokenObject.GetComponent<Token>();
         tempToken.visitedCorners = new Stack<BoardPointIndex>(token.visitedCorners);
+        tempToken.visitedCorners = new Stack<BoardPointIndex>(tempToken.visitedCorners);
         tempToken.boardPointIndex = token.boardPointIndex;
 
         if (tempToken.boardPointIndex == BoardPointIndex.Initial)
