@@ -178,6 +178,7 @@ public class TokenManager : MonoBehaviour
     {
         if (token.boardPointIndex == BoardPointIndex.Initial) return BoardPointIndex.LowerRight;
         if (token.boardPointIndex == BoardPointIndex.Finished) return BoardPointIndex.Finished;
+        if (token.boardPointIndex == BoardPointIndex.LowerRight) return BoardPointIndex.Finished;
         if (isFirstMove)
         {
             if (token.boardPointIndex == BoardPointIndex.UpperRight) return BoardPointIndex.RightDiag1;
