@@ -124,7 +124,7 @@ public class PrepareManager : MonoBehaviour
     {
         DeactivateTarget();
 
-        if (steps == -1) ActivateBackButtons(token);
+        if (steps == -1 && tokenManager.GetPreviousIndices(token).Count != 1) ActivateBackButtons(token);
     }
 
     public void OnClickBackButton() // click back button
@@ -240,7 +240,9 @@ public class PrepareManager : MonoBehaviour
             List<BoardPointIndex> moveIndexList = tokenManager.GetPreviousIndices(token);
             foreach (BoardPointIndex moveIndex in moveIndexList)
             {
-                movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
+                if (moveIndex == BoardPointIndex.Initial) movePositionList.Add(token.initialPosition);
+                else if (moveIndex == BoardPointIndex.Finished) movePositionList.Add(tokenManager.finishedPosition);
+                else movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
             }
         }
         else

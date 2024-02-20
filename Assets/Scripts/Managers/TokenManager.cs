@@ -250,7 +250,6 @@ public class TokenManager : MonoBehaviour
             if (stackedToken.isValid() && !indices.Contains(tempIndex)) indices.Add(tempIndex);
         }
 
-        foreach (BoardPointIndex index in indices) Debug.Log(index);
         return indices;
     }
 
@@ -463,7 +462,17 @@ public class TokenManager : MonoBehaviour
         {
             prepareManager.OnMouseDownTokenGroup(token, steps);
 
-            if (steps == -1) keyStep = 4;
+            if (steps == -1)
+            {
+                List<BoardPointIndex> previousIndices = GetPreviousIndices(token);
+                if (previousIndices.Count == 1)
+                {
+                    keyStep = 0;
+
+                    StartMoveBackwards(token, previousIndices[0]);
+                }
+                else keyStep = 4;
+            }
             else
             {
                 keyStep = 0;
@@ -480,7 +489,7 @@ public class TokenManager : MonoBehaviour
 
             prepareManager.OnClickBackButton();
 
-            StartCoroutine(MoveTokenTo(token, boardPointIndex));
+            StartMoveBackwards(token, boardPointIndex);
         }
     }
 
