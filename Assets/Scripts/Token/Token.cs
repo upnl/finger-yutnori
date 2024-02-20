@@ -13,6 +13,8 @@ public class Token : MonoBehaviour
     private BoardPointIndex _boardPointIndex;
     private Vector2 _initialPosition;
 
+    public TokenGroup tokenGroup;
+
     public bool canFinish { get => _canFinish; set => _canFinish = value; }
     public bool hasLooped { get => _hasLooped; set => _hasLooped = value; }
     public int routeType { get => _routeType; set => _routeType = value; }
