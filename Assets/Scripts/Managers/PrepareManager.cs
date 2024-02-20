@@ -1,178 +1,266 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class PrepareManager : MonoBehaviour
 {
     [SerializeField] private TokenManager tokenManager;
-    [SerializeField] private GameObject buttons; // get buttons in this folder
+    [SerializeField] private GameObject prepareImages, buttons;
 
-    [SerializeField] private GameObject prepareButtonPrefab, moveButtonPrefab;
+    [SerializeField] private GameObject previewPrefab, targetPrefab;
+    [SerializeField] private GameObject backButtonPrefab;
 
-    private Queue<PrepareButton> prepareButtonPool;
-    private Queue<MoveButton> moveButtonPool;
-    private List<PrepareButton> activePrepareButtonList;
-    private List<MoveButton> activeMoveButtonList;
+    private Queue<GameObject> previewPool, targetPool;
+    private Queue<BackButton> backButtonPool;
+    private List<GameObject> activePreviewList, activeTargetList;
+    private List<BackButton> activeBackButtonList;
+
+    private int TokenCount;
 
     public void ResetSettings()
     {
+        ResetVars();
+
+        ResetImages();
+
         ResetButtons();
     }
 
-    private void ResetButtons() // reset things about buttons
+    private void ResetVars()
     {
-        int buttonCount; // the maximum number of prepareButtons to create
         if (tokenManager.initialPositions1.Count > tokenManager.initialPositions2.Count)
         {
-            buttonCount = tokenManager.initialPositions1.Count;
+            TokenCount = tokenManager.initialPositions1.Count;
         }
         else
         {
-            buttonCount = tokenManager.initialPositions2.Count;
-        }
-
-        prepareButtonPool = new();
-        activePrepareButtonList = new();
-
-        PrepareButton newPrepareButton;
-        for (int i = 0; i < buttonCount; i++) // get prepareButtonPool ready
-        {
-            newPrepareButton = Instantiate(prepareButtonPrefab).GetComponent<PrepareButton>();
-
-            newPrepareButton.transform.SetParent(buttons.transform);
-            newPrepareButton.transform.localScale = Vector3.one;
-
-            newPrepareButton.gameObject.SetActive(false);
-
-            prepareButtonPool.Enqueue(newPrepareButton);
-        }
-
-        moveButtonPool = new();
-        activeMoveButtonList = new();
-
-        MoveButton newMoveButton;
-        for (int i = 0; i < 6; i++) // get moveButtonPool ready
-        {
-            newMoveButton = Instantiate(moveButtonPrefab).GetComponent<MoveButton>();
-
-            newMoveButton.transform.SetParent(buttons.transform);
-            newMoveButton.transform.localScale = Vector3.one;
-
-            newMoveButton.gameObject.SetActive(false);
-
-            moveButtonPool.Enqueue(newMoveButton);
+            TokenCount = tokenManager.initialPositions2.Count;
         }
     }
 
-    public void ActivatePrepareButtons(int player, int steps)
+    private void ResetImages() // reset preview and target
     {
-        List<Token> winTokens = (player == 1) ? tokenManager.tokens1 : tokenManager.tokens2; // get winplayer tokens
+        previewPool = new();
+        activePreviewList = new();
 
-        List<Vector2> prepareButtonPositionList = GetPrepareButtonPositionList(winTokens);
-
-        Token winToken;
-        Vector2 prepareButtonPosition;
-        for (int i = 0; i < prepareButtonPositionList.Count; i++)
+        GameObject newPreview;
+        for (int i = 0; i < TokenCount + 4; i++)
         {
-            winToken = winTokens[i];
+            newPreview = Instantiate(previewPrefab);
 
-            if (winToken.boardPointIndex == BoardPointIndex.Finished) continue;
-            else if (steps == -1 && winToken.boardPointIndex == BoardPointIndex.Initial) continue;
+            newPreview.transform.SetParent(prepareImages.transform);
+            newPreview.transform.localScale = Vector3.one;
+
+            newPreview.gameObject.SetActive(false);
+
+            previewPool.Enqueue(newPreview);
+        }
+
+        targetPool = new();
+        activeTargetList = new();
+
+        GameObject newTarget;
+        for (int i = 0; i < 3; i++)
+        {
+            newTarget = Instantiate(targetPrefab);
+
+            newTarget.transform.SetParent(prepareImages.transform);
+            newTarget.transform.localScale = Vector3.one;
+
+            newTarget.gameObject.SetActive(false);
+
+            targetPool.Enqueue(newTarget);
+        }
+    }
+
+    private void ResetButtons() // reset backButton
+    {
+        backButtonPool = new();
+        activeBackButtonList = new();
+
+        BackButton newBackButton;
+        for (int i = 0; i < 3; i++)
+        {
+            newBackButton = Instantiate(backButtonPrefab).GetComponent<BackButton>();
+
+            newBackButton.transform.SetParent(buttons.transform);
+            newBackButton.transform.localScale = Vector3.one;
+
+            newBackButton.gameObject.SetActive(false);
+
+            backButtonPool.Enqueue(newBackButton);
+        }
+    }
+
+    public void PreparePreviews(int steps) // when Yut Board Start
+    {
+        ActivatePreviews(steps);
+    }
+
+    public void OnMouseEnterTokenGroup(Token token, int steps) // put mouse on token group
+    {
+        DeactivatePreviews();
+
+        ActivateTargets(token, steps);
+    }
+
+    public void OnMouseExitTokenGroup(Token token, int steps) // put mouse off on token group
+    {
+        DeactivateTarget();
+
+        ActivatePreviews(steps);
+    }
+
+    public void OnMouseDownTokenGroup(Token token, int steps) // click token group
+    {
+        DeactivateTarget();
+
+        if (steps == -1) ActivateBackButtons(token);
+    }
+
+    public void OnClickBackButton() // click back button
+    {
+        DeactivateBackButtons();
+    }
+
+    private void ActivatePreviews(int steps)
+    {
+        List<Vector2> previewPositionList = new();
+        foreach (Token token in tokenManager.winTokenList)
+        {
+            if (tokenManager.AbleToClickToken(token))
+            {
+                previewPositionList.AddRange(GetMovePositionList(token, steps));
+            }
+        }
+
+        GameObject preview;
+        foreach (Vector2 PreviewPosition in previewPositionList)
+        {
+            preview = previewPool.Dequeue();
+
+            preview.transform.position = PreviewPosition;
+
+            preview.gameObject.SetActive(true);
+
+            activePreviewList.Add(preview);
+        }
+    }
+
+    private void ActivateTargets(Token token, int steps)
+    {
+        List<Vector2> targetPositionList = GetMovePositionList(token, steps);
+
+        GameObject target;
+        foreach (Vector2 targetPosition in targetPositionList)
+        {
+            target = targetPool.Dequeue();
+
+            target.transform.position = targetPosition;
+
+            target.gameObject.SetActive(true);
+
+            activeTargetList.Add(target);
+        }
+    }
+
+    private void ActivateBackButtons(Token token)
+    {
+        List<BoardPointIndex> moveIndexList = tokenManager.GetPreviousIndices(token);
+
+        BackButton backButton;
+        Vector2 backButtonPosition;
+        foreach (BoardPointIndex moveIndex in moveIndexList)
+        {
+            backButtonPosition = tokenManager.boardPoints[(int)moveIndex].transform.position;
+
+            backButton = backButtonPool.Dequeue();
+
+            backButton.transform.position = backButtonPosition;
+            backButton.token = token;
+            backButton.boardPointIndex = moveIndex;
+
+            backButton.gameObject.SetActive(true);
+
+            activeBackButtonList.Add(backButton);
+        }
+    }
+
+    private void DeactivatePreviews()
+    {
+        foreach (GameObject activePreview in activePreviewList)
+        {
+            activePreview.gameObject.SetActive(false);
+
+            previewPool.Enqueue(activePreview);
+        }
+
+        activePreviewList.Clear();
+    }
+
+    private void DeactivateTarget()
+    {
+        foreach (GameObject activeTarget in activeTargetList)
+        {
+            activeTarget.gameObject.SetActive(false);
+
+            targetPool.Enqueue(activeTarget);
+        }
+
+        activeTargetList.Clear();
+    }
+
+    private void DeactivateBackButtons()
+    {
+        foreach (BackButton activeBackButton in activeBackButtonList)
+        {
+            activeBackButton.gameObject.SetActive(false);
+
+            backButtonPool.Enqueue(activeBackButton);
+        }
+
+        activeBackButtonList.Clear();
+    }
+
+    private List<Vector2> GetMovePositionList(Token token, int steps)
+    {
+        List<Vector2> movePositionList = new();
+
+        if (steps == -1)
+        {
+            List<BoardPointIndex> moveIndexList = tokenManager.GetPreviousIndices(token);
+            foreach (BoardPointIndex moveIndex in moveIndexList)
+            {
+                movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
+            }
+        }
+        else
+        {
+            BoardPointIndex moveIndex = tokenManager.GetIndexAfterMove(token, steps);
+
+            if (moveIndex == BoardPointIndex.Initial)
+            {
+                movePositionList.Add(token.initialPosition);
+            }
+            else if (moveIndex == BoardPointIndex.Finished)
+            {
+                movePositionList.Add(tokenManager.finishedPosition);
+            }
             else
             {
-                prepareButtonPosition = prepareButtonPositionList[i];
-                ActivatePrepareButton(winToken, prepareButtonPosition, steps);
+                movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
             }
         }
 
-        if (activePrepareButtonList.Count == 0) tokenManager.FailActivePrepareButton(); // no token able to move
-    }
-
-    private void ActivatePrepareButton(Token token, Vector2 position, int steps)
-    {
-        PrepareButton prepareButton = prepareButtonPool.Dequeue();
-
-        prepareButton.transform.position = position;
-        prepareButton.thisToken = token;
-        prepareButton.steps = steps;
-
-        prepareButton.gameObject.SetActive(true);
-
-        activePrepareButtonList.Add(prepareButton);
-    }
-
-    public void ActivateMoveButton(Token token, int steps)
-    {
-        Vector2 moveButtonPosition = GetMoveButtonPosition(token, steps);
-
-        MoveButton moveButton = moveButtonPool.Dequeue();
-
-        moveButton.transform.position = moveButtonPosition;
-        moveButton.thisToken = token;
-        moveButton.steps = steps;
-
-        moveButton.gameObject.SetActive(true);
-
-        activeMoveButtonList.Add(moveButton);
-    }
-
-    public void DeactivatePrepareButtons()
-    {
-        foreach (PrepareButton activePrepareButton in activePrepareButtonList)
-        {
-            activePrepareButton.gameObject.SetActive(false);
-
-            prepareButtonPool.Enqueue(activePrepareButton);
-        }
-
-        activePrepareButtonList.Clear();
-    }
-
-    public void DeactivateMoveButtons()
-    {
-        foreach (MoveButton activeMoveButton in activeMoveButtonList)
-        {
-            activeMoveButton.gameObject.SetActive(false);
-
-            moveButtonPool.Enqueue(activeMoveButton);
-        }
-
-        activeMoveButtonList.Clear();
-    }
-
-    private List<Vector2> GetPrepareButtonPositionList(List<Token> winTokens)
-    {
-        List<Vector2> prepareButtonPositionList = new();
-
-        Vector2 prepareButtonPosition;
-        foreach (Token winToken in winTokens)
-        {
-            prepareButtonPosition = winToken.transform.position;
-            if (prepareButtonPositionList.Contains(prepareButtonPosition) == false) // if in one position tokens more than 2 exist, create 1 prepareButton
-            {
-                prepareButtonPositionList.Add(prepareButtonPosition);
-            }
-        }
-
-        return prepareButtonPositionList;
-    }
-
-    private Vector2 GetMoveButtonPosition(Token token, int steps)
-    {
-        Vector2 moveButtonPosition;
-
-        BoardPointIndex moveButtonIndex;
-        if (steps < 0) moveButtonIndex = tokenManager.GetPreviousIndices(token)[0];
-        else moveButtonIndex = tokenManager.GetIndexAfterMove(token, steps);
-
-        if (moveButtonIndex == BoardPointIndex.Initial) moveButtonPosition = token.initialPosition;
-        else if (moveButtonIndex == BoardPointIndex.Finished) moveButtonPosition = tokenManager.finishedPosition;
-        else moveButtonPosition = tokenManager.boardPoints[(int)moveButtonIndex].transform.position;
-
-        return moveButtonPosition;
+        return movePositionList;
     }
 }

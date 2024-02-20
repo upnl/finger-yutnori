@@ -53,11 +53,16 @@ public class TokenManager : MonoBehaviour
 
     private int winPlayer;
 
-    private bool readyToKeyPlayer = true;
-    private bool readyToKeyNumber = false;
-    private bool readyToButton = false;
-
-    private PrepareButton selectedPrepareButton = null;
+    public List<Token> winTokenList;
+    /// <summary>
+    /// 0 : wait to choose player
+    /// 1 : wait to choose steps
+    /// 2 : PrepareManager.ActivatePreviews()
+    /// 3 : wait token click
+    /// 4 : wait back button click
+    /// </summary>
+    private int keyStep = 0;
+    private int steps;
 
     private void Start()
     {
@@ -408,26 +413,17 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     private void DebugHandleInput()
     {
-        int steps = 0;
-
-        if (readyToKeyPlayer)
+        if (keyStep == 0)
         {
-            readyToKeyPlayer = false;
-            readyToKeyNumber = true;
+            keyStep = 1;
 
-            if (Input.GetKeyDown(KeyCode.A)) winPlayer = 1;
-            else if (Input.GetKeyDown(KeyCode.B)) winPlayer = 2;
-            else // if A or B is not pressed, restore settings
-            {
-                readyToKeyPlayer = true;
-                readyToKeyNumber = false;
-            }
+            if (Input.GetKeyDown(KeyCode.A)) winTokenList = tokens1;
+            else if (Input.GetKeyDown(KeyCode.B)) winTokenList = tokens2;
+            else keyStep = 0;
         }
-
-        if (readyToKeyNumber)
+        else if (keyStep == 1)
         {
-            readyToKeyNumber = false;
-            readyToButton = true;
+            keyStep = 2;
 
             if (Input.GetKeyDown(KeyCode.Alpha1)) steps = 1;
             else if (Input.GetKeyDown(KeyCode.Alpha2)) steps = 2;
@@ -435,49 +431,72 @@ public class TokenManager : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.Alpha4)) steps = 4;
             else if (Input.GetKeyDown(KeyCode.Alpha5)) steps = 5;
             else if (Input.GetKeyDown(KeyCode.Alpha0)) steps = -1;
-            else // if 0 ~ 5 is not pressed, restore settings
+            else keyStep = 1;
+        }
+        else if (keyStep == 2)
+        {
+            keyStep = 3;
+
+            prepareManager.PreparePreviews(steps);
+        }
+    }
+
+    public void OnMouseEnterTokenGroup(Token token)
+    {
+        if (keyStep == 3 && AbleToClickToken(token))
+        {
+            prepareManager.OnMouseEnterTokenGroup(token, steps);
+        }
+    }
+
+    public void OnMouseExitTokenGroup(Token token)
+    {
+        if (keyStep == 3 && AbleToClickToken(token))
+        {
+            prepareManager.OnMouseExitTokenGroup(token, steps);
+        }
+    }
+
+    public void OnMouseDownTokenGroup(Token token)
+    {
+        if (keyStep == 3 && AbleToClickToken(token))
+        {
+            prepareManager.OnMouseDownTokenGroup(token, steps);
+
+            if (steps == -1) keyStep = 4;
+            else
             {
-                readyToKeyNumber = true;
-                readyToButton = false;
+                keyStep = 0;
+                StartMove(token, steps);
             }
         }
-        
+    }
 
-        if (readyToButton == true)
+    public void OnClickBackButton(Token token, BoardPointIndex boardPointIndex)
+    {
+        if (keyStep == 4)
         {
-            readyToButton = false;
+            keyStep = 0;
 
-            prepareManager.ActivatePrepareButtons(winPlayer, steps);
+            prepareManager.OnClickBackButton();
+
+            StartCoroutine(MoveTokenTo(token, boardPointIndex));
         }
     }
 
-    public void FailActivePrepareButton() // when steps is -1 and there are no tokens able to move
+    public bool AbleToClickToken(Token token)
     {
-        readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
-    }
-
-    public void OnClickPrepareButton(PrepareButton prepareButton, Token token, int steps)
-    {
-        prepareManager.DeactivateMoveButtons();
-
-        if (selectedPrepareButton == prepareButton) selectedPrepareButton = null; // select selected prepareButton
-        else
+        if (winTokenList.Contains(token))
         {
-            selectedPrepareButton = prepareButton;
-
-            prepareManager.ActivateMoveButton(token, steps);
+            if (token.boardPointIndex != BoardPointIndex.Finished)
+            {
+                if (steps != -1 || token.boardPointIndex != BoardPointIndex.Initial)
+                {
+                    return true;
+                }
+            }
         }
-    }
 
-    public void OnClickMoveButton(Token token, int steps)
-    {
-        readyToKeyPlayer = true; // go to DebugHandleInput step to choose player
-
-        prepareManager.DeactivatePrepareButtons();
-        prepareManager.DeactivateMoveButtons();
-
-        selectedPrepareButton = null;
-        if (steps < 0) StartMoveBackwards(token, 0);
-        else StartMove(token, steps);
+        return false;
     }
 }

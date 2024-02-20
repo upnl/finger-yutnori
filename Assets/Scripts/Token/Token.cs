@@ -167,4 +167,25 @@ public class Token : MonoBehaviour
         }
         stackedTokens.Clear();
     }
+
+    private void OnMouseEnter()
+    {
+        TokenManager tokenManager = GameObject.Find("TokenManager").GetComponent<TokenManager>();
+
+        tokenManager.OnMouseEnterTokenGroup(this);
+    }
+
+    private void OnMouseExit()
+    {
+        TokenManager tokenManager = GameObject.Find("TokenManager").GetComponent<TokenManager>();
+
+        tokenManager.OnMouseExitTokenGroup(this);
+    }
+
+    private void OnMouseDown()
+    {
+        TokenManager tokenManager = GameObject.Find("TokenManager").GetComponent<TokenManager>();
+
+        tokenManager.OnMouseDownTokenGroup(this);
+    }
 }
