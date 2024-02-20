@@ -20,7 +20,11 @@ public class FingerToggle : MonoBehaviour
         
     }
 
-    //Toggle의 IsOn이 변화할 때 호출되는 메서드. 선택할 경우 자신의 SerialNumber을, 해제할 경우 -1을 SelectedFinger에 할당
+    /// <summary>
+    /// allocates its serialnumber to selectedfinger when something has been selected
+    /// but allocates -1 when someting has been released
+    /// </summary>
+    /// <param name="isOn"></param>
     public void ToggleClick(bool isOn)
     {
         if(_FingerToggleGroup.SelectedFinger < 0)

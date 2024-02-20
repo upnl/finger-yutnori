@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 	public Player player1;
 	public Player player2;
 
-
+    
     void Awake()
     {
 	    if (Instance != null && Instance != this)
@@ -32,8 +32,6 @@ public class GameManager : MonoBehaviour
 	    
 	    player2.playerName = PlayerPrefs.GetString("player2Name");
 	    player2.playerHand = PlayerPrefs.GetString("player2Hand");
-
-	    
     }
 
     // Update is called once per frame
