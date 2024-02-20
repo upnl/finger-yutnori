@@ -190,7 +190,7 @@ public class TokenManager : MonoBehaviour
             if (token.boardPointIndex == BoardPointIndex.Center) return BoardPointIndex.LeftDiag3;
         }
         if (token.boardPointIndex == BoardPointIndex.Center &&
-            token.visitedCorners.Contains(BoardPointIndex.UpperLeft)) return BoardPointIndex.LeftDiag3;
+            token.GetPreviousCornerAtCorner() == BoardPointIndex.UpperLeft) return BoardPointIndex.LeftDiag3;
         if (token.boardPointIndex == BoardPointIndex.LeftDiag2) return BoardPointIndex.Center;
         if (token.boardPointIndex == BoardPointIndex.LeftDiag4) return BoardPointIndex.LowerRight;
         if (token.boardPointIndex == BoardPointIndex.RightDiag4) return BoardPointIndex.LowerLeft;
@@ -210,22 +210,22 @@ public class TokenManager : MonoBehaviour
         if (token.boardPointIndex == BoardPointIndex.Finished) return BoardPointIndex.Finished;
         if (token.boardPointIndex == BoardPointIndex.LowerRight)
         {
-            if (token.visitedCorners.Contains(BoardPointIndex.LowerLeft))
+            if (token.GetPreviousCornerAtCorner() == BoardPointIndex.LowerLeft)
                 return BoardPointIndex.Lower4;
-            if (token.visitedCorners.Contains(BoardPointIndex.Center))
+            if (token.GetPreviousCornerAtCorner() == BoardPointIndex.Center)
                 return BoardPointIndex.LeftDiag4;
             return BoardPointIndex.Initial;            
         }
         if (token.boardPointIndex == BoardPointIndex.LowerLeft)
         {
-            if (token.visitedCorners.Contains(BoardPointIndex.Center)) return BoardPointIndex.RightDiag4;
+            if (token.GetPreviousCornerAtCorner() == BoardPointIndex.Center) return BoardPointIndex.RightDiag4;
             return BoardPointIndex.Left4;
         }
         if (token.boardPointIndex == BoardPointIndex.RightDiag1) return BoardPointIndex.UpperRight;
         if (token.boardPointIndex == BoardPointIndex.LeftDiag1) return BoardPointIndex.UpperLeft;
         if (token.boardPointIndex == BoardPointIndex.LeftDiag3) return BoardPointIndex.Center;
         if (token.boardPointIndex == BoardPointIndex.Center &&
-            token.visitedCorners.Contains(BoardPointIndex.UpperLeft))
+            token.GetPreviousCornerAtCorner() == BoardPointIndex.UpperLeft)
             return BoardPointIndex.LeftDiag2;
         return token.boardPointIndex - 1;
     }
@@ -237,11 +237,12 @@ public class TokenManager : MonoBehaviour
     /// <returns></returns>
     public List<BoardPointIndex> GetPreviousIndices(Token token)
     {
-        List<BoardPointIndex> indices = new List<BoardPointIndex> { GetPreviousIndex(token) };
+        List<BoardPointIndex> indices = new List<BoardPointIndex>();
+        if (token.isValid()) indices.Add(GetPreviousIndex(token));
         foreach (Token stackedToken in token.stackedTokens)
         {
             BoardPointIndex tempIndex = GetPreviousIndex(stackedToken);
-            if (!indices.Contains(tempIndex)) indices.Add(tempIndex);
+            if (stackedToken.isValid() && !indices.Contains(tempIndex)) indices.Add(tempIndex);
         }
 
         foreach (BoardPointIndex index in indices) Debug.Log(index);

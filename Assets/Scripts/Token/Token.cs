@@ -89,17 +89,27 @@ public class Token : MonoBehaviour
         return IsTokenAt(otherToken.transform.position);
     }
 
+    public bool isAtCorner()
+    {
+        return boardPointIndex == BoardPointIndex.LowerRight ||
+               boardPointIndex == BoardPointIndex.UpperRight ||
+               boardPointIndex == BoardPointIndex.UpperLeft ||
+               boardPointIndex == BoardPointIndex.LowerLeft ||
+               boardPointIndex == BoardPointIndex.Center;
+    }
+
+    public bool isValid()
+    {
+        return !isAtCorner() || visitedCorners.Contains(boardPointIndex);
+    }
+
     /// <summary>
     /// If boardPointIndex is corner point, push it into visitedCorners
     /// </summary>
     /// <param name="boardPointIndex"></param>
     public void PushVisitedCorners(BoardPointIndex boardPointIndex)
     {
-        if (boardPointIndex == BoardPointIndex.LowerRight ||
-            boardPointIndex == BoardPointIndex.UpperRight ||
-            boardPointIndex == BoardPointIndex.UpperLeft ||
-            boardPointIndex == BoardPointIndex.LowerLeft ||
-            boardPointIndex == BoardPointIndex.Center) visitedCorners.Push(boardPointIndex);
+        if (isAtCorner()) visitedCorners.Push(boardPointIndex);
     }
     
     /// <summary>
@@ -116,6 +126,16 @@ public class Token : MonoBehaviour
             }
         }
         foreach (Token stackedToken in stackedTokens) stackedToken.PopVisitedCornersUntil(targetIndex);
+    }
+
+    public BoardPointIndex GetPreviousCornerAtCorner()
+    {
+        if (visitedCorners.Count < 2) return BoardPointIndex.Initial;
+
+        BoardPointIndex tempIndex = visitedCorners.Pop();
+        BoardPointIndex result = visitedCorners.Peek();
+        visitedCorners.Push(tempIndex);
+        return result;
     }
 
     /// <summary>
