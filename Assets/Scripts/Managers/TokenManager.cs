@@ -334,10 +334,14 @@ public class TokenManager : MonoBehaviour
         var tempTokenObject = Instantiate<GameObject>(emptyTokenPrefab, token.transform.position, Quaternion.identity);
         Token tempToken = tempTokenObject.GetComponent<Token>();
         tempToken.visitedCorners = new Stack<BoardPointIndex>(token.visitedCorners);
+        tempToken.visitedCorners = new Stack<BoardPointIndex>(tempToken.visitedCorners);
         tempToken.boardPointIndex = token.boardPointIndex;
 
         if (tempToken.boardPointIndex == BoardPointIndex.Initial)
+        {
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
             InstantMoveTokenTo(tempToken, BoardPointIndex.Right1);
+        }
         else InstantMoveTokenByOne(tempToken, true);
 
         for (int i = 0; i < distance-1; i++)
@@ -360,6 +364,7 @@ public class TokenManager : MonoBehaviour
         if (token.boardPointIndex == BoardPointIndex.Initial)
         {
             yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
             yield return MoveTokenTo(token, BoardPointIndex.Right1);
         }
         else yield return MoveTokenByOne(token, true);
