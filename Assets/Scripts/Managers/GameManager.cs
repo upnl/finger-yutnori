@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 
 	public UIManager UIManager { get; private set; }
 	public GameStateManager GameStateManager { get; private set; }
+    public AudioManager AudioManager { get; private set; }
 
 	public Player player1;
 	public Player player2;
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
 	    
 	    GameStateManager = GetComponentInChildren<GameStateManager>();
 	    UIManager = GetComponentInChildren<UIManager>();
+	    AudioManager = GetComponentInChildren<AudioManager>();
     }
     
     void Start() //시작할 때 사용자의 정보를 받아온다.
