@@ -103,7 +103,7 @@ public class Token : MonoBehaviour
     }
     
     /// <summary>
-    /// Pop visitedCorners until it pops targetIndex
+    /// Pop visitedCorners until targetIndex is at top
     /// </summary>
     /// <param name="targetIndex"></param>
     public void PopVisitedCornersUntil(BoardPointIndex targetIndex)
