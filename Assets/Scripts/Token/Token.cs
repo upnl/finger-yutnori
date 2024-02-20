@@ -109,7 +109,11 @@ public class Token : MonoBehaviour
     /// <param name="boardPointIndex"></param>
     public void PushVisitedCorners(BoardPointIndex boardPointIndex)
     {
-        if (isAtCorner()) visitedCorners.Push(boardPointIndex);
+        if (boardPointIndex == BoardPointIndex.LowerRight ||
+            boardPointIndex == BoardPointIndex.UpperRight ||
+            boardPointIndex == BoardPointIndex.UpperLeft ||
+            boardPointIndex == BoardPointIndex.LowerLeft ||
+            boardPointIndex == BoardPointIndex.Center) visitedCorners.Push(boardPointIndex);
     }
     
     /// <summary>
