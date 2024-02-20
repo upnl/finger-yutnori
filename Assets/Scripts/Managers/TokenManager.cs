@@ -232,8 +232,7 @@ public class TokenManager : MonoBehaviour
     /// <returns></returns>
     public List<BoardPointIndex> GetPreviousIndices(Token token)
     {
-        List<BoardPointIndex> indices = new List<BoardPointIndex>();
-        indices.Add(GetPreviousIndex(token));
+        List<BoardPointIndex> indices = new List<BoardPointIndex> { GetPreviousIndex(token) };
         foreach (Token stackedToken in token.stackedTokens)
         {
             BoardPointIndex tempIndex = GetPreviousIndex(stackedToken);

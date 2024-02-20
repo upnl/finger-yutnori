@@ -79,6 +79,11 @@ public class Token : MonoBehaviour
         return IsTokenAt(boardPoint.transform.position);
     }
 
+    /// <summary>
+    /// Returns whether the Token is at the same position as otherToken
+    /// </summary>
+    /// <param name="otherToken"></param>
+    /// <returns></returns>
     public bool IsStacked(Token otherToken)
     {
         return IsTokenAt(otherToken.transform.position);
