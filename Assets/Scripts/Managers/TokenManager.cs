@@ -167,6 +167,8 @@ public class TokenManager : MonoBehaviour
     public IEnumerator ResetToken(Token token)
     {
         token.visitedCorners.Clear();
+        foreach (Token stackedToken in token.stackedTokens)
+            GetTokens(GetPlayer(token)).Add(stackedToken);
         token.Unstack();
         yield return MoveTokenTo(token, BoardPointIndex.Initial);
     }
