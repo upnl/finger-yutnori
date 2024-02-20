@@ -133,6 +133,8 @@ public class TokenManager : MonoBehaviour
     public IEnumerator MoveTokenTo(Token token, BoardPointIndex boardPointIndex)
     {
         token.boardPointIndex = boardPointIndex;
+        foreach (Token stackedToken in token.stackedTokens)
+            stackedToken.boardPointIndex = boardPointIndex;
         if (boardPointIndex == BoardPointIndex.Initial)
         {
             yield return token.MoveTo(token.initialPosition);
@@ -147,6 +149,8 @@ public class TokenManager : MonoBehaviour
     public void InstantMoveTokenTo(Token token, BoardPointIndex boardPointIndex)
     {
         token.boardPointIndex = boardPointIndex;
+        foreach (Token stackedToken in token.stackedTokens)
+            stackedToken.boardPointIndex = boardPointIndex;
         if (boardPointIndex == BoardPointIndex.Initial)
             token.InstantMoveTo(token.initialPosition);
         else if (boardPointIndex == BoardPointIndex.Finished)
