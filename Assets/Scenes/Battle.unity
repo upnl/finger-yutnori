@@ -2138,10 +2138,22 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1046945899}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1168327074}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OnClickWaitForResult
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1046945899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2310,6 +2322,12 @@ MonoBehaviour:
   - {fileID: 1174341266}
   - {fileID: 691731824}
   - {fileID: 2096674927}
+  WaitForResult: {fileID: 1487810958}
+  ResultCanvas: {fileID: 2115620892}
+  player1Text: {fileID: 803438262}
+  player2Text: {fileID: 366203458}
+  player1Image: {fileID: 1865802086}
+  player2Image: {fileID: 1536635500}
   TargetPlayer0Done: {fileID: 97880151}
   TargetPlayer1Done: {fileID: 1878852114}
   TargetCanvas: {fileID: 7628541}
@@ -4221,6 +4239,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2049443928}
   - component: {fileID: 2049443929}
+  - component: {fileID: 2049443930}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -4259,12 +4278,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1: {fileID: 348552324}
   player2: {fileID: 441110944}
-  WaitForResult: {fileID: 0}
-  ResultCanvas: {fileID: 0}
-  WinnerText: {fileID: 0}
-  LoserText: {fileID: 0}
-  WinnerImage: {fileID: 0}
-  LoserImage: {fileID: 0}
+--- !u!114 &2049443930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049443927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 699cb35dd3f7c6745be3cb58d0e0a827, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player1selection: -1
+  player2selection: -1
 --- !u!1001 &2096674924
 PrefabInstance:
   m_ObjectHideFlags: 0
