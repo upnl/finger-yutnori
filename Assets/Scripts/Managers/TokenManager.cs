@@ -103,6 +103,12 @@ public class TokenManager : MonoBehaviour
         return 2;
     }
 
+    public int GetOpponent(Token token)
+    {
+        if (tokens1.Contains(token)) return 2;
+        return 1;
+    }
+
     public List<Token> GetTokens(int player)
     {
         if (player == 1) return tokens1;
@@ -110,43 +116,32 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds all tokens in the player's team that are stackable with thisToken
-    /// and stacks them onto thisToken
+    /// Finds a token in player's team that is stackable with thisToken
     /// </summary>
     /// <param name="thisToken"></param>
-    public void FindAllStackable(Token thisToken)
+    public Token FindStackable(Token thisToken, int player)
     {
-        int player = GetPlayer(thisToken);
-        List<Token> tokens = GetTokens(player);
-        int i = 0;
-        while (i < tokens.Count)
+        foreach (Token token in GetTokens(player))
         {
-            if (thisToken != tokens[i] && thisToken.IsStacked(tokens[i]))
-            {
-                thisToken.Stack(tokens[i]);
-                tokens.RemoveAt(i);
-            }
-            else i++;
+            if (token != thisToken && token.IsStackable(thisToken))
+                return token;
         }
+        return null;
     }
 
-    /// <summary>
-    /// Finds all tokens in the opponent's team that are stacked with thisToken
-    /// and resets them
-    /// </summary>
-    /// <param name="thisToken"></param>
-    public void FindAllCatchable(Token thisToken)
+    public void StackOnto(Token thisToken, Token otherToken)
     {
-        int player = 3 - GetPlayer(thisToken); // The other player
-        List<Token> tokens = GetTokens(player);
-        foreach (Token token in tokens)
-        {
-            if (thisToken.IsStacked(token))
-            {
-                StartCoroutine(ResetToken(token));
-                break;
-            }
-        }
+        thisToken.Stack(otherToken);
+        GetTokens(GetPlayer(thisToken)).Remove(otherToken);
+    }
+
+    public void HandleStackable(Token token)
+    {
+        Token stackableToken = FindStackable(token, GetPlayer(token));
+        if (stackableToken != null) StackOnto(token, stackableToken);
+
+        stackableToken = FindStackable(token, GetOpponent(token));
+        if (stackableToken != null) StartCoroutine(ResetToken(stackableToken));
     }
 
     /// <summary>
@@ -184,7 +179,7 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to initialPosition and resets visitedCorners and stackedTokens
+    /// Moves token to initialPosition and resets visitedCorners and stackedTokens;
     /// Use with StartCoroutine()
     /// </summary>
     /// <param name="token"></param>
@@ -364,8 +359,7 @@ public class TokenManager : MonoBehaviour
             if (token.boardPointIndex == BoardPointIndex.Finished) break;
             yield return MoveTokenByOne(token, false);
         }
-        FindAllStackable(token);
-        FindAllCatchable(token);
+        HandleStackable(token);
     }
 
     /// <summary>
@@ -403,8 +397,7 @@ public class TokenManager : MonoBehaviour
                 break;
         }
         yield return MoveTokenTo(token, boardPointIndex);
-        FindAllStackable(token);
-        FindAllCatchable(token);
+        HandleStackable(token);
     }
 
     /// <summary>

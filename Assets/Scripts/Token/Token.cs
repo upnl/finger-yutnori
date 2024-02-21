@@ -84,7 +84,7 @@ public class Token : MonoBehaviour
     /// </summary>
     /// <param name="otherToken"></param>
     /// <returns></returns>
-    public bool IsStacked(Token otherToken)
+    public bool IsStackable(Token otherToken)
     {
         return IsTokenAt(otherToken.transform.position);
     }
