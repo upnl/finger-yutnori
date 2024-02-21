@@ -156,6 +156,14 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void ShowEndScreen()
+    {
+        endScreen.transform.position = baseCanvas.transform.position;
+        Text text = endScreen.GetComponentInChildren<Text>();
+        Player winner = (_tokenManager.DecideWinner() == 1) ? GameManager.Instance.player1 : GameManager.Instance.player2;
+        text.text = winner.playerName + " won!";
+    }
+
     public void OnClickSelectButton()
     {
         if (fingerToggleGroup.selectedFinger != -1) // check if player choose toggle

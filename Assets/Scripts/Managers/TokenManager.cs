@@ -158,7 +158,11 @@ public class TokenManager : MonoBehaviour
             StartCoroutine(ResetToken(stackableToken));
             yield return MoveToken(token, 1);
         }
-        else _gameStateManager.StartPlayer1Turn();
+        else
+        {
+            if (DecideWinner() != 0) GameEnd();
+            else _gameStateManager.StartPlayer1Turn();
+        }
     }
 
     /// <summary>
@@ -191,7 +195,6 @@ public class TokenManager : MonoBehaviour
         yield return MoveTokenTo(token, BoardPointIndex.Finished);
         if (GetPlayer(token) == 1) score1++;
         else score2++;
-        if (DecideWinner() == 0) _gameStateManager.StartPlayer1Turn();
     }
 
     /// <summary>
@@ -594,13 +597,6 @@ public class TokenManager : MonoBehaviour
 
     private void GameEnd()
     {
-        endingScreen.transform.position = canvas.transform.position;
-
-        Text text = endingScreen.GetComponentInChildren<Text>();
-
-        Player winner = (DecideWinner() == 1) ? GameManager.Instance.player1 : GameManager.Instance.player2;
-
-        text.text = winner.playerName + " won!";
-        //UnityEditor.EditorApplication.isPlaying = false;
+        _gameStateManager.GameEnd();
     }
 }

@@ -59,4 +59,10 @@ public class GameStateManager : MonoBehaviour
         gameState = GameState.ShowResult;
         _UIManager.ShowResultScreen();
     }
+
+    public void GameEnd()
+    {
+        gameState = GameState.End;
+        _UIManager.ShowEndScreen();
+    }
 }
