@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum BoardPointIndex
 {
@@ -42,6 +44,7 @@ public enum BoardPointIndex
 public class TokenManager : MonoBehaviour
 {
     [SerializeField] private PrepareManager prepareManager;
+    [SerializeField] private Button RestartButton, NewGameButton;
 
     public List<GameObject> boardPoints;
 
@@ -101,7 +104,10 @@ public class TokenManager : MonoBehaviour
         if (DecideWinner() != 0)
         {
             Debug.Log(DecideWinner() + " won!");
-            UnityEditor.EditorApplication.isPlaying = false;
+            //UnityEditor.EditorApplication.isPlaying = false;
+
+            RestartButton.gameObject.SetActive(true);
+            NewGameButton.gameObject.SetActive(true);
         } 
         DebugHandleInput();
     }
@@ -512,7 +518,18 @@ public class TokenManager : MonoBehaviour
         {
             keyStep = 3;
 
-            prepareManager.PreparePreviews(steps);
+            Token onMouseOverToken = null;
+            foreach (Token winToken in winTokenList)
+            {
+                if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+                {
+                    onMouseOverToken = winToken;
+                    break;
+                }
+            }
+
+            if (onMouseOverToken == null) prepareManager.PreparePreviews(steps);
+            else OnMouseEnterTokenGroup(onMouseOverToken);
         }
     }
 
@@ -583,5 +600,15 @@ public class TokenManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void OnClickRestartButton()
+    {
+        SceneManager.LoadScene("Yutnori");
+    }
+
+    public void OnClickNewGameButton()
+    {
+        SceneManager.LoadScene("Login");
     }
 }
