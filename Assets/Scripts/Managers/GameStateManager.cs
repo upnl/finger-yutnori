@@ -6,6 +6,7 @@ public enum GameState
 {
     Player1Turn,
     Player2Turn,
+    ReadyResult,
     BattleResult,
     MovToken,
     End
@@ -23,6 +24,10 @@ public class GameStateManager : MonoBehaviour
         GameState = GameState.Player2Turn;
     }
 
+    public void readyBattleResult()
+    {
+        GameState = GameState.ReadyResult;
+    }
     public void showBattleResult()
     {
         GameState = GameState.BattleResult;
