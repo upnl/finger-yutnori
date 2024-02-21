@@ -105,7 +105,6 @@ public class TokenManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) GameEnd();
         if (DecideWinner() != 0) GameEnd();
         DebugHandleInput();
     }
