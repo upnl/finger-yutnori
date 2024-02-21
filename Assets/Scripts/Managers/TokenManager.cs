@@ -518,7 +518,18 @@ public class TokenManager : MonoBehaviour
         {
             keyStep = 3;
 
-            prepareManager.PreparePreviews(steps);
+            Token onMouseOverToken = null;
+            foreach (Token winToken in winTokenList)
+            {
+                if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+                {
+                    onMouseOverToken = winToken;
+                    break;
+                }
+            }
+
+            if (onMouseOverToken == null) prepareManager.PreparePreviews(steps);
+            else OnMouseEnterTokenGroup(onMouseOverToken);
         }
     }
 

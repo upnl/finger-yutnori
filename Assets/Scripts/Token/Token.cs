@@ -12,6 +12,8 @@ public class Token : MonoBehaviour
     public Stack<BoardPointIndex> visitedCorners;
     public List<Token> stackedTokens;
 
+    private bool onMouseOver;
+
     private void Awake()
     {
         visitedCorners = new Stack<BoardPointIndex>();
@@ -20,7 +22,7 @@ public class Token : MonoBehaviour
 
     private void Update()
     {
-
+        onMouseOver = false;
     }
 
     /// <summary>
@@ -169,6 +171,16 @@ public class Token : MonoBehaviour
         }
         stackedTokens.Clear();
         return tokens;
+    }
+
+    public bool IsOnMouseOver()
+    {
+        return onMouseOver;
+    }
+
+    private void OnMouseOver()
+    {
+        onMouseOver = true;
     }
 
     private void OnMouseEnter()
