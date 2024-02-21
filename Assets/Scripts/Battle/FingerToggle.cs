@@ -24,16 +24,15 @@ public class FingerToggle : MonoBehaviour
     /// allocates its serialnumber to selectedfinger when something has been selected
     /// but allocates -1 when someting has been released
     /// </summary>
-    /// <param name="isOn"></param>
-    public void ToggleClick(bool isOn)
+    public void ToggleClick()
     {
-        if(_FingerToggleGroup.SelectedFinger < 0)
+        if (_FingerToggleGroup.selectedFinger == -1)
         {
-            _FingerToggleGroup.SelectedFinger = SerialNumber;
+            _FingerToggleGroup.selectedFinger = SerialNumber;
         }
         else
         {
-            _FingerToggleGroup.SelectedFinger = -1;
+            _FingerToggleGroup.selectedFinger = -1;
         }
     }
 }

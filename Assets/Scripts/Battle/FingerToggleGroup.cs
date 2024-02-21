@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class FingerToggleGroup : MonoBehaviour
 {
-    public int SelectedFinger;
+    public int selectedFinger;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        selectedFinger = -1;
     }
 
     // Update is called once per frame
@@ -24,7 +24,7 @@ public class FingerToggleGroup : MonoBehaviour
     /// <returns></returns>
     public bool IsToggleClicked()
     {
-        if(SelectedFinger < 0)
+        if(selectedFinger < 0)
         {
             return false;
         }
