@@ -172,6 +172,8 @@ public class TokenManager : MonoBehaviour
     public IEnumerator ResetToken(Token token)
     {
         token.visitedCorners.Clear();
+        foreach (Token stackedToken in token.stackedTokens)
+            GetTokens(GetPlayer(token)).Add(stackedToken);
         token.Unstack();
         yield return MoveTokenTo(token, BoardPointIndex.Initial);
     }
@@ -250,6 +252,7 @@ public class TokenManager : MonoBehaviour
             if (stackedToken.isValid() && !indices.Contains(tempIndex)) indices.Add(tempIndex);
         }
 
+        foreach (BoardPointIndex index in indices) Debug.Log(index);
         return indices;
     }
 
@@ -342,7 +345,10 @@ public class TokenManager : MonoBehaviour
         tempToken.boardPointIndex = token.boardPointIndex;
 
         if (tempToken.boardPointIndex == BoardPointIndex.Initial)
+        {
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
             InstantMoveTokenTo(tempToken, BoardPointIndex.Right1);
+        }
         else InstantMoveTokenByOne(tempToken, true);
 
         for (int i = 0; i < distance-1; i++)
@@ -365,6 +371,7 @@ public class TokenManager : MonoBehaviour
         if (token.boardPointIndex == BoardPointIndex.Initial)
         {
             yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
             yield return MoveTokenTo(token, BoardPointIndex.Right1);
         }
         else yield return MoveTokenByOne(token, true);

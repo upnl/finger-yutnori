@@ -248,7 +248,6 @@ public class PrepareManager : MonoBehaviour
         else
         {
             BoardPointIndex moveIndex = tokenManager.GetIndexAfterMove(token, steps);
-
             if (moveIndex == BoardPointIndex.Initial)
             {
                 movePositionList.Add(token.initialPosition);
