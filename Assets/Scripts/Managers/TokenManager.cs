@@ -44,6 +44,8 @@ public enum BoardPointIndex
 public class TokenManager : MonoBehaviour
 {
     [SerializeField] private PrepareManager prepareManager;
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private GameObject tokens, endingScreen;
     [SerializeField] private Button RestartButton, NewGameButton;
 
     public List<GameObject> boardPoints;
@@ -78,6 +80,7 @@ public class TokenManager : MonoBehaviour
         {
             var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions1[i];
             newToken.finishedPosition = finishedPositions1[i];
@@ -87,6 +90,7 @@ public class TokenManager : MonoBehaviour
         {
             var newTokenObject = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
+            newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions2[i];
             newToken.finishedPosition = finishedPositions2[i];
@@ -101,14 +105,7 @@ public class TokenManager : MonoBehaviour
 
     private void Update()
     {
-        if (DecideWinner() != 0)
-        {
-            Debug.Log(DecideWinner() + " won!");
-            //UnityEditor.EditorApplication.isPlaying = false;
-
-            RestartButton.gameObject.SetActive(true);
-            NewGameButton.gameObject.SetActive(true);
-        } 
+        if (DecideWinner() != 0) GameEnd();
         DebugHandleInput();
     }
 
@@ -610,5 +607,15 @@ public class TokenManager : MonoBehaviour
     public void OnClickNewGameButton()
     {
         SceneManager.LoadScene("Login");
+    }
+
+    private void GameEnd()
+    {
+        endingScreen.transform.position = canvas.transform.position;
+
+        Text text = endingScreen.GetComponentInChildren<Text>();
+
+        text.text = DecideWinner() + " won!";
+        //UnityEditor.EditorApplication.isPlaying = false;
     }
 }
