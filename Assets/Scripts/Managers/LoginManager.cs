@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using System.Collections.Generic;
 
 public class LoginManager : MonoBehaviour
 {
@@ -62,15 +63,16 @@ public class LoginManager : MonoBehaviour
 
 	public void ClickContinueButton()
 	{
-		if (player1ToggleGroup.ActiveToggles().FirstOrDefault() == null) player1Hand = "LeftHand";
-		else player1Hand = player1ToggleGroup.ActiveToggles().FirstOrDefault().name;
-		
-		if (player2ToggleGroup.ActiveToggles().FirstOrDefault() == null) player2Hand = "LeftHand";
-		else player2Hand = player2ToggleGroup.ActiveToggles().FirstOrDefault().name;
-		//플레이어가 선택한 손을 받아온다.
+		List<string> playerHandList = new() { "LeftHand", "RightHand" };
 
+		if (player1ToggleGroup.AnyTogglesOn() == false) player1Hand = playerHandList[Random.Range(0, 2)];
+        else player1Hand = player1ToggleGroup.ActiveToggles().FirstOrDefault().name;
 
-		player1Name = player1InputField.transform.Find("InputPlayerName").GetComponent<TMP_InputField>().text;
+        if (player2ToggleGroup.AnyTogglesOn() == false) player2Hand = playerHandList[Random.Range(0, 2)];
+        else player2Hand = player2ToggleGroup.ActiveToggles().FirstOrDefault().name;
+        //플레이어가 선택한 손을 받아온다.
+
+        player1Name = player1InputField.transform.Find("InputPlayerName").GetComponent<TMP_InputField>().text;
 		player2Name = player2InputField.transform.Find("InputPlayerName").GetComponent<TMP_InputField>().text;
 		//inputfield에 입력받은 플레이어의 이름을 받아온다.
 		if (player1Name.Equals("") || player2Name.Equals(""))
