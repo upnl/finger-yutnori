@@ -9,6 +9,7 @@ public class BattleManager : MonoBehaviour
     bool IsItDraw = false;
     
     
+    
     public RSPState[,] BattleIndex =
             {
             { RSPState.draw, RSPState.twowinwithzero, RSPState.twowinwithzero, RSPState.twowinwithzero, RSPState.onewinwithzero, RSPState.onewinwithzero },
@@ -18,11 +19,12 @@ public class BattleManager : MonoBehaviour
             { RSPState.twowinwithzero, RSPState.twowin, RSPState.onewin, RSPState.onewin, RSPState.draw, RSPState.twowin},
             { RSPState.twowinwithzero, RSPState.twowin, RSPState.twowin, RSPState.onewin, RSPState.onewin, RSPState.draw}
         };
-    public int player1result { get; private set; }
-    public int player2result { get; private set; }
+
+    public Player player1;
+    public Player player2;
     public bool TotalDraw { get; private set; }
 
-    public UIManager uimanager { get; private set; }
+    public UIManager UIManager { get; private set; }
 
     // Start is called before the first frame update
     public enum RSPState
@@ -35,14 +37,13 @@ public class BattleManager : MonoBehaviour
         error = 3
     }
     private void Awake()
-    {
-        uimanager = GetComponentInChildren<UIManager>();
+    { 
+        UIManager = GetComponentInChildren<UIManager>();
     }
     void Start()
     {
-        
-        player1result = 0;
-        player2result = 0;
+        player1 = GameManager.Instance.player1;
+        player2 = GameManager.Instance.player2;
         TotalDraw = false;
     }
 

@@ -28,11 +28,12 @@ public class UIManager : MonoBehaviour
     public GameObject TargetPlayer0Done;
     public GameObject TargetPlayer1Done;
     public GameObject TargetCanvas;
+    
     public BattleManager battlemanager { get; private set; }
-
     private GameStateManager _gameStateManager;
 
     int curPlayer = 0;
+    
 
     void Start()
     {
@@ -74,7 +75,7 @@ public class UIManager : MonoBehaviour
                 TargetPlayer0Done.transform.Find("Text").GetComponent<TMP_Text>().text
                     = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이 손가락을 선택합니다." ;
 
-                battlemanager.player1selection = fingerToggleGroup.SelectedFinger;
+                
                 Player1Image = Buttons[fingerToggleGroup.SelectedFinger].GetComponentInChildren<Image>().sprite;
             }
             else if (curPlayer == 1)
@@ -82,12 +83,19 @@ public class UIManager : MonoBehaviour
                 GameManager.Instance.player2.latestChoice = fingerToggleGroup.SelectedFinger;
                 TargetPlayer1Done.transform.position = TargetCanvas.transform.position;
                 WaitForResult.transform.position = TargetCanvas.transform.position;
-                battlemanager.player2selection = fingerToggleGroup.SelectedFinger;
+                
                 Player2Image = Buttons[fingerToggleGroup.SelectedFinger].GetComponentInChildren<Image>().sprite;
             }
-            curPlayer = (curPlayer == 0) ? 1 : 0;
+            curPlayer++;
             Buttons[fingerToggleGroup.SelectedFinger].isOn = false;
             fingerToggleGroup.SelectedFinger = -1;
+            
+            if (curPlayer == 2)
+            {
+                curPlayer -= 2;
+                _gameStateManager.readyBattleResult();
+            }
+            
         }
     }
 
@@ -118,11 +126,13 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void OnClickWaitForResult()
     {
+        _gameStateManager.showBattleResult();
         string player1result = "";
         string player2result = "";
-        BattleManager.RSPState result = battlemanager.CompareSelection(battlemanager.player1selection, battlemanager.player2selection);
-
-        WaitForResult.transform.position = new Vector3(3000, 0, 0);
+        int player1Choice = GameManager.Instance.player1.latestChoice;
+        int player2Choice = GameManager.Instance.player2.latestChoice;
+        BattleManager.RSPState result = battlemanager.CompareSelection(player1Choice, player2Choice);
+        
         ResultCanvas.transform.position = TargetCanvas.transform.position;
 
         player1Image.GetComponent<Image>().sprite = Player1Image;
