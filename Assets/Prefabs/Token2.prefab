@@ -99,7 +99,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialPosition: {x: 0, y: 0}
-  finishedPosition: {x: 0, y: 0}
   boardPointIndex: 0
   stackedTokens: []
 --- !u!58 &-6625909311604717641
