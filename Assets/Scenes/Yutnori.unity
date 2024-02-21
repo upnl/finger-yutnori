@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311924, g: 0.38073963, b: 0.3587269, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2053,29 +2053,29 @@ MonoBehaviour:
   - {fileID: 667895245}
   - {fileID: 867256544}
   - {fileID: 1853000956}
-  tokenPrefab1: {fileID: 1033905997015866053, guid: 51c5ea11405bda541a80fe278a8c5f9b, type: 3}
-  tokenPrefab2: {fileID: 864976361006012577, guid: d5fdb2da38a490c42a5c8377b4e21186, type: 3}
+  tokenPrefab1: {fileID: 7463503918206803974, guid: aaff88c3b94584969b687ee0c0e6ecc7, type: 3}
+  tokenPrefab2: {fileID: 2232079811925802256, guid: 826f007bd272748f282eb78b1cd8cc97, type: 3}
   emptyTokenPrefab: {fileID: 7124735917412138256, guid: 02f0fe28a38caa14da146aabb2e4774d, type: 3}
   initialPositions1:
-  - {x: -40, y: -62.5}
-  - {x: -30, y: -62.5}
-  - {x: -20, y: -62.5}
-  - {x: -10, y: -62.5}
+  - {x: -40, y: -64.5}
+  - {x: -30, y: -64.5}
+  - {x: -20, y: -64.5}
+  - {x: -10, y: -64.5}
   initialPositions2:
-  - {x: 40, y: -62.5}
-  - {x: 30, y: -62.5}
-  - {x: 20, y: -62.5}
-  - {x: 10, y: -62.5}
+  - {x: 40, y: -64.5}
+  - {x: 30, y: -64.5}
+  - {x: 20, y: -64.5}
+  - {x: 10, y: -64.5}
   finishedPositions1:
-  - {x: -40, y: 62.5}
-  - {x: -30, y: 62.5}
-  - {x: -20, y: 62.5}
-  - {x: -10, y: 62.5}
+  - {x: -40, y: 58}
+  - {x: -30, y: 58}
+  - {x: -20, y: 58}
+  - {x: -10, y: 58}
   finishedPositions2:
-  - {x: 40, y: 62.5}
-  - {x: 30, y: 62.5}
-  - {x: 20, y: 62.5}
-  - {x: 10, y: 62.5}
+  - {x: 40, y: 58}
+  - {x: 30, y: 58}
+  - {x: 20, y: 58}
+  - {x: 10, y: 58}
   tokens1: []
   tokens2: []
   winTokenList: []

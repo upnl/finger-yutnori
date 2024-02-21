@@ -14,10 +14,17 @@ public class Token : MonoBehaviour
 
     private bool onMouseOver;
 
+    public bool AttackTrigger;
+    Animator TokenAnim;
+
     private void Awake()
     {
         visitedCorners = new Stack<BoardPointIndex>();
         stackedTokens = new List<Token>();
+
+        AttackTrigger = false;
+        TokenAnim = GetComponent<Animator>();
+
     }
 
     private void Update()
@@ -49,7 +56,17 @@ public class Token : MonoBehaviour
     /// <param name="newPosition"></param>
     public IEnumerator MoveTo(Vector2 newPosition)
     {
-        yield return transform.DOMove(newPosition, 0.5f).WaitForCompletion();
+        if (AttackTrigger)
+        {
+            yield return new WaitForSeconds(0.25f);
+            TokenAnim.SetTrigger("Attack");
+            yield return new WaitForSeconds(0.75f);
+            AttackTrigger = false;
+            yield return new WaitForSeconds(0.25f);
+        }
+        TokenAnim.SetBool("Run", true);
+        yield return transform.DOMove(newPosition, 0.583f).WaitForCompletion();
+        TokenAnim.SetBool("Run", false);
     }
 
     /// <summary>

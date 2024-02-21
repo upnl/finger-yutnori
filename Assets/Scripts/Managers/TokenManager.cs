@@ -155,6 +155,7 @@ public class TokenManager : MonoBehaviour
         stackableToken = FindStackable(token, GetOpponent(token));
         if (stackableToken != null)
         {
+            token.AttackTrigger = true;
             ResetToken(stackableToken);
             StartMove(token, 1);
         }
