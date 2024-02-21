@@ -159,11 +159,12 @@ public class Token : MonoBehaviour
     /// </summary>
     public void Unstack()
     {
-        foreach (Token token in stackedTokens)
+        foreach (Token stackedToken in stackedTokens)
         {
-            token.InstantMoveTo(transform.position);
-            token.gameObject.SetActive(true);
-            StartCoroutine(token.MoveTo(token.initialPosition));
+            stackedToken.gameObject.SetActive(true);
+            StartCoroutine(stackedToken.MoveTo(stackedToken.initialPosition));
+            stackedToken.boardPointIndex = BoardPointIndex.Initial;
+            stackedToken.visitedCorners.Clear();
         }
         stackedTokens.Clear();
     }

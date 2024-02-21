@@ -193,7 +193,10 @@ public class TokenManager : MonoBehaviour
     {
         token.visitedCorners.Clear();
         foreach (Token stackedToken in token.stackedTokens)
+        {
+            InstantMoveTokenTo(stackedToken, token.boardPointIndex);
             GetTokens(GetPlayer(token)).Add(stackedToken);
+        }
         token.Unstack();
         yield return MoveTokenTo(token, BoardPointIndex.Initial);
     }
