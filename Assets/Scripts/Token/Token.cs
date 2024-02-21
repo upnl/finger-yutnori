@@ -7,7 +7,7 @@ using Unity.VisualScripting.Antlr3.Runtime;
 
 public class Token : MonoBehaviour
 {
-    public Vector2 initialPosition;
+    public Vector2 initialPosition, finishedPosition;
     public BoardPointIndex boardPointIndex;
     public Stack<BoardPointIndex> visitedCorners;
     public List<Token> stackedTokens;
@@ -84,7 +84,7 @@ public class Token : MonoBehaviour
     /// </summary>
     /// <param name="otherToken"></param>
     /// <returns></returns>
-    public bool IsStacked(Token otherToken)
+    public bool IsStackable(Token otherToken)
     {
         return IsTokenAt(otherToken.transform.position);
     }
@@ -155,18 +155,20 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Unstacks all stackedTokens and moves them to initialPosition
+    /// Unstacks all stackedTokens and returns them as a list
     /// </summary>
-    public void Unstack()
+    public List<Token> Unstack()
     {
+        List<Token> tokens = new List<Token>();
         foreach (Token stackedToken in stackedTokens)
         {
+            stackedToken.InstantMoveTo(transform.position);
+            stackedToken.boardPointIndex = boardPointIndex;
             stackedToken.gameObject.SetActive(true);
-            StartCoroutine(stackedToken.MoveTo(stackedToken.initialPosition));
-            stackedToken.boardPointIndex = BoardPointIndex.Initial;
-            stackedToken.visitedCorners.Clear();
+            tokens.Add(stackedToken);
         }
         stackedTokens.Clear();
+        return tokens;
     }
 
     private void OnMouseEnter()

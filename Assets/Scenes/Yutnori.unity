@@ -1583,16 +1583,25 @@ MonoBehaviour:
   tokenPrefab2: {fileID: 864976361006012577, guid: d5fdb2da38a490c42a5c8377b4e21186, type: 3}
   emptyTokenPrefab: {fileID: 7124735917412138256, guid: 02f0fe28a38caa14da146aabb2e4774d, type: 3}
   initialPositions1:
+  - {x: -40, y: -75}
   - {x: -30, y: -75}
+  - {x: -20, y: -75}
   - {x: -10, y: -75}
-  - {x: 10, y: -75}
-  - {x: 30, y: -75}
   initialPositions2:
+  - {x: 40, y: -75}
+  - {x: 30, y: -75}
+  - {x: 20, y: -75}
+  - {x: 10, y: -75}
+  finishedPositions1:
+  - {x: -40, y: 75}
   - {x: -30, y: 75}
+  - {x: -20, y: 75}
   - {x: -10, y: 75}
-  - {x: 10, y: 75}
+  finishedPositions2:
+  - {x: 40, y: 75}
   - {x: 30, y: 75}
-  finishedPosition: {x: 50, y: -60}
+  - {x: 20, y: 75}
+  - {x: 10, y: 75}
   tokens1: []
   tokens2: []
   winTokenList: []

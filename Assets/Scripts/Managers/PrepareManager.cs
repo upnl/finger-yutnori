@@ -241,7 +241,7 @@ public class PrepareManager : MonoBehaviour
             foreach (BoardPointIndex moveIndex in moveIndexList)
             {
                 if (moveIndex == BoardPointIndex.Initial) movePositionList.Add(token.initialPosition);
-                else if (moveIndex == BoardPointIndex.Finished) movePositionList.Add(tokenManager.finishedPosition);
+                else if (moveIndex == BoardPointIndex.Finished) movePositionList.Add(token.finishedPosition);
                 else movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
             }
         }
@@ -254,7 +254,7 @@ public class PrepareManager : MonoBehaviour
             }
             else if (moveIndex == BoardPointIndex.Finished)
             {
-                movePositionList.Add(tokenManager.finishedPosition);
+                movePositionList.Add(token.finishedPosition);
             }
             else
             {

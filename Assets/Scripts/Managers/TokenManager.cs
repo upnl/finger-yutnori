@@ -47,11 +47,11 @@ public class TokenManager : MonoBehaviour
 
     [SerializeField] private GameObject tokenPrefab1, tokenPrefab2, emptyTokenPrefab;
     public List<Vector2> initialPositions1, initialPositions2;
-    public Vector2 finishedPosition; // TODO: Make an actual finishing position or animation?
+    public List<Vector2> finishedPositions1, finishedPositions2;
 
     public List<Token> tokens1, tokens2;
 
-    private int winPlayer;
+    private int score1, score2;
 
     public List<Token> winTokenList;
     /// <summary>
@@ -69,12 +69,15 @@ public class TokenManager : MonoBehaviour
         tokens1 = new List<Token>();
         tokens2 = new List<Token>();
 
+        score1 = score2 = 0;
+
         for (int i = 0; i < initialPositions1.Count; i++)
         {
             var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions1[i];
+            newToken.finishedPosition = finishedPositions1[i];
             tokens1.Add(newToken);
         }
         for (int i = 0; i < initialPositions2.Count; i++)
@@ -83,70 +86,115 @@ public class TokenManager : MonoBehaviour
             Token newToken = newTokenObject.GetComponent<Token>();
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions2[i];
+            newToken.finishedPosition = finishedPositions2[i];
             tokens2.Add(newToken);
         }
 
-        foreach (Token token1 in tokens1) StartCoroutine(ResetToken(token1)); // reset tokens1
-        foreach (Token token2 in tokens2) StartCoroutine(ResetToken(token2)); // reset tokens2
+        foreach (Token token in tokens1) ResetToken(token); // reset tokens1
+        foreach (Token token in tokens2) ResetToken(token); // reset tokens2
 
         prepareManager.ResetSettings();
     }
 
     private void Update()
     {
+        if (DecideWinner() != 0)
+        {
+            Debug.Log(DecideWinner() + " won!");
+            UnityEditor.EditorApplication.isPlaying = false;
+        } 
         DebugHandleInput();
     }
 
     public int GetPlayer(Token token)
     {
-        if (tokens1.Contains(token)) return 1;
-        return 2;
+        return tokens1.Contains(token) ? 1 : 2;
+    }
+
+    public int GetOpponent(Token token)
+    {
+        return tokens1.Contains(token) ? 2 : 1;
     }
 
     public List<Token> GetTokens(int player)
     {
-        if (player == 1) return tokens1;
-        return tokens2;
+        return (player == 1) ? tokens1 : tokens2;
     }
 
     /// <summary>
-    /// Finds all tokens in the player's team that are stackable with thisToken
-    /// and stacks them onto thisToken
+    /// Finds a token in player's team that is stackable with thisToken
     /// </summary>
     /// <param name="thisToken"></param>
-    public void FindAllStackable(Token thisToken)
+    public Token FindStackable(Token thisToken, int player)
     {
-        int player = GetPlayer(thisToken);
-        List<Token> tokens = GetTokens(player);
-        int i = 0;
-        while (i < tokens.Count)
+        foreach (Token token in GetTokens(player))
         {
-            if (thisToken != tokens[i] && thisToken.IsStacked(tokens[i]))
-            {
-                thisToken.Stack(tokens[i]);
-                tokens.RemoveAt(i);
-            }
-            else i++;
+            if (token != thisToken && token.IsStackable(thisToken))
+                return token;
+        }
+        return null;
+    }
+
+    public void StackOnto(Token thisToken, Token otherToken)
+    {
+        thisToken.Stack(otherToken);
+        GetTokens(GetPlayer(thisToken)).Remove(otherToken);
+    }
+
+    public void HandleStackable(Token token)
+    {
+        Token stackableToken = FindStackable(token, GetPlayer(token));
+        if (stackableToken != null) StackOnto(token, stackableToken);
+
+        stackableToken = FindStackable(token, GetOpponent(token));
+        if (stackableToken != null)
+        {
+            ResetToken(stackableToken);
+            StartMove(token, 1);
         }
     }
 
     /// <summary>
-    /// Finds all tokens in the opponent's team that are stacked with thisToken
-    /// and resets them
+    /// Moves token to initialPosition and resets visitedCorners and stackedTokens;
     /// </summary>
-    /// <param name="thisToken"></param>
-    public void FindAllCatchable(Token thisToken)
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public void ResetToken(Token token)
     {
-        int player = 3 - GetPlayer(thisToken); // The other player
-        List<Token> tokens = GetTokens(player);
-        foreach (Token token in tokens)
+        foreach (Token stackedToken in token.Unstack())
         {
-            if (thisToken.IsStacked(token))
-            {
-                StartCoroutine(ResetToken(token));
-                break;
-            }
+            stackedToken.visitedCorners.Clear();
+            StartCoroutine(MoveTokenTo(stackedToken, BoardPointIndex.Initial));
+            GetTokens(GetPlayer(token)).Add(stackedToken);
         }
+        token.visitedCorners.Clear();
+        StartCoroutine(MoveTokenTo(token, BoardPointIndex.Initial));
+    }
+
+    public IEnumerator FinishToken(Token token)
+    {
+        foreach (Token stackedToken in token.Unstack())
+        {
+            stackedToken.visitedCorners.Clear();
+            yield return MoveTokenTo(stackedToken, BoardPointIndex.Finished);
+            if (GetPlayer(token) == 1) score1++;
+            else score2++;
+        }
+        token.visitedCorners.Clear();
+        yield return MoveTokenTo(token, BoardPointIndex.Finished);
+        if (GetPlayer(token) == 1) score1++;
+        else score2++;
+    }
+
+    /// <summary>
+    /// Decides the winner of the game(1 or 2); 0 if not yet ended
+    /// </summary>
+    /// <returns></returns>
+    public int DecideWinner()
+    {
+        if (score1 == 4) return 1;
+        if (score2 == 4) return 2;
+        return 0;
     }
 
     /// <summary>
@@ -166,7 +214,7 @@ public class TokenManager : MonoBehaviour
         }
         else if (boardPointIndex == BoardPointIndex.Finished)
         {
-            yield return token.MoveTo(finishedPosition);
+            yield return token.MoveTo(token.finishedPosition);
         }
         else yield return token.MoveTo(boardPoints[(int)token.boardPointIndex]);
     }
@@ -179,26 +227,8 @@ public class TokenManager : MonoBehaviour
         if (boardPointIndex == BoardPointIndex.Initial)
             token.InstantMoveTo(token.initialPosition);
         else if (boardPointIndex == BoardPointIndex.Finished)
-            token.InstantMoveTo(finishedPosition);
+            token.InstantMoveTo(token.finishedPosition);
         else token.InstantMoveTo(boardPoints[(int)token.boardPointIndex]);
-    }
-
-    /// <summary>
-    /// Moves token to initialPosition and resets visitedCorners and stackedTokens
-    /// Use with StartCoroutine()
-    /// </summary>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    public IEnumerator ResetToken(Token token)
-    {
-        token.visitedCorners.Clear();
-        foreach (Token stackedToken in token.stackedTokens)
-        {
-            InstantMoveTokenTo(stackedToken, token.boardPointIndex);
-            GetTokens(GetPlayer(token)).Add(stackedToken);
-        }
-        token.Unstack();
-        yield return MoveTokenTo(token, BoardPointIndex.Initial);
     }
 
     /// <summary>
@@ -319,6 +349,11 @@ public class TokenManager : MonoBehaviour
     public IEnumerator MoveTokenByOne(Token token, bool isFirstMove)
     {
         BoardPointIndex nextBoardPointIndex = GetNextIndex(token, isFirstMove);
+        if (nextBoardPointIndex == BoardPointIndex.Finished)
+        {
+            yield return FinishToken(token);
+            yield break;
+        }
         token.PushVisitedCorners(nextBoardPointIndex);
         foreach (Token stackedToken in token.stackedTokens) {
             stackedToken.PushVisitedCorners(nextBoardPointIndex);
@@ -328,7 +363,7 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Instantly moves token by one forwards' Set isFirstMove to true for the first move in the turn
+    /// Instantly moves token by one forwards; Set isFirstMove to true for the first move in the turn
     /// </summary>
     /// <param name="token"></param>
     /// <param name="isFirstMove"></param>
@@ -364,8 +399,7 @@ public class TokenManager : MonoBehaviour
             if (token.boardPointIndex == BoardPointIndex.Finished) break;
             yield return MoveTokenByOne(token, false);
         }
-        FindAllStackable(token);
-        FindAllCatchable(token);
+        HandleStackable(token);
     }
 
     /// <summary>
@@ -378,7 +412,7 @@ public class TokenManager : MonoBehaviour
     {
         if (boardPointIndex == BoardPointIndex.Initial)
         {
-            yield return ResetToken(token);
+            ResetToken(token);
             yield break;
         }
         switch (boardPointIndex)
@@ -403,8 +437,7 @@ public class TokenManager : MonoBehaviour
                 break;
         }
         yield return MoveTokenTo(token, boardPointIndex);
-        FindAllStackable(token);
-        FindAllCatchable(token);
+        HandleStackable(token);
     }
 
     /// <summary>
