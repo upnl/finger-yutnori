@@ -110,10 +110,11 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Finds all tokens that are stacked with thisToken and stacks them onto thisToken
+    /// Finds all tokens in the player's team that are stackable with thisToken
+    /// and stacks them onto thisToken
     /// </summary>
     /// <param name="thisToken"></param>
-    public void FindAllStacked(Token thisToken)
+    public void FindAllStackable(Token thisToken)
     {
         int player = GetPlayer(thisToken);
         List<Token> tokens = GetTokens(player);
@@ -126,6 +127,25 @@ public class TokenManager : MonoBehaviour
                 tokens.RemoveAt(i);
             }
             else i++;
+        }
+    }
+
+    /// <summary>
+    /// Finds all tokens in the opponent's team that are stacked with thisToken
+    /// and resets them
+    /// </summary>
+    /// <param name="thisToken"></param>
+    public void FindAllCatchable(Token thisToken)
+    {
+        int player = 3 - GetPlayer(thisToken); // The other player
+        List<Token> tokens = GetTokens(player);
+        foreach (Token token in tokens)
+        {
+            if (thisToken.IsStacked(token))
+            {
+                StartCoroutine(ResetToken(token));
+                break;
+            }
         }
     }
 
@@ -164,7 +184,7 @@ public class TokenManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to initialPosition and resets canFinish, hasLooped, routeType;
+    /// Moves token to initialPosition and resets visitedCorners and stackedTokens
     /// Use with StartCoroutine()
     /// </summary>
     /// <param name="token"></param>
@@ -256,7 +276,43 @@ public class TokenManager : MonoBehaviour
         return indices;
     }
 
+    /// <summary>
+    /// Gets the BoardPointIndex that token would move to after moving token by distance
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="distance"></param>
+    /// <returns></returns>
+    public BoardPointIndex GetIndexAfterMove(Token token, int distance)
+    {
+        var tempTokenObject = Instantiate<GameObject>(emptyTokenPrefab, token.transform.position, Quaternion.identity);
+        Token tempToken = tempTokenObject.GetComponent<Token>();
+        tempToken.visitedCorners = new Stack<BoardPointIndex>(token.visitedCorners);
+        tempToken.visitedCorners = new Stack<BoardPointIndex>(tempToken.visitedCorners);
+        tempToken.boardPointIndex = token.boardPointIndex;
 
+        if (tempToken.boardPointIndex == BoardPointIndex.Initial)
+        {
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
+            InstantMoveTokenTo(tempToken, BoardPointIndex.Right1);
+        }
+        else InstantMoveTokenByOne(tempToken, true);
+
+        for (int i = 0; i < distance - 1; i++)
+        {
+            if (tempToken.boardPointIndex == BoardPointIndex.Finished) break;
+            InstantMoveTokenByOne(tempToken, false);
+        }
+        BoardPointIndex boardPointIndex = tempToken.boardPointIndex;
+        Destroy(tempTokenObject);
+        return boardPointIndex;
+    }
+
+    /// <summary>
+    /// Moves token by one forwards; Set isFirstMove to true for the first move in the turn
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="isFirstMove"></param>
+    /// <returns></returns>
     public IEnumerator MoveTokenByOne(Token token, bool isFirstMove)
     {
         BoardPointIndex nextBoardPointIndex = GetNextIndex(token, isFirstMove);
@@ -268,6 +324,11 @@ public class TokenManager : MonoBehaviour
         yield return MoveTokenTo(token, nextBoardPointIndex);
     }
 
+    /// <summary>
+    /// Instantly moves token by one forwards' Set isFirstMove to true for the first move in the turn
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="isFirstMove"></param>
     public void InstantMoveTokenByOne(Token token, bool isFirstMove)
     {
         BoardPointIndex nextBoardPointIndex = GetNextIndex(token, isFirstMove);
@@ -278,6 +339,30 @@ public class TokenManager : MonoBehaviour
             InstantMoveTokenTo(stackedToken, nextBoardPointIndex);
         }
         InstantMoveTokenTo(token, nextBoardPointIndex);
+    }
+
+    /// <summary>
+    /// Actually moves token by distance using MoveTokenByOne();
+    /// </summary>
+    /// <param name="token"></param>
+    /// <param name="distance"></param>
+    public IEnumerator MoveToken(Token token, int distance)
+    {
+        if (token.boardPointIndex == BoardPointIndex.Initial)
+        {
+            yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
+            token.PushVisitedCorners(BoardPointIndex.LowerRight);
+            yield return MoveTokenTo(token, BoardPointIndex.Right1);
+        }
+        else yield return MoveTokenByOne(token, true);
+
+        for (int i = 0; i < distance-1; i++)
+        {
+            if (token.boardPointIndex == BoardPointIndex.Finished) break;
+            yield return MoveTokenByOne(token, false);
+        }
+        FindAllStackable(token);
+        FindAllCatchable(token);
     }
 
     /// <summary>
@@ -315,7 +400,8 @@ public class TokenManager : MonoBehaviour
                 break;
         }
         yield return MoveTokenTo(token, boardPointIndex);
-        FindAllStacked(token);
+        FindAllStackable(token);
+        FindAllCatchable(token);
     }
 
     /// <summary>
@@ -324,64 +410,10 @@ public class TokenManager : MonoBehaviour
     /// <param name="token"></param>
     /// <param name="index"></param>
     /// <returns></returns>
-    public IEnumerator MoveTokenByOneBackwards(Token token, int index)
+    public IEnumerator MoveTokenBackwards(Token token, int index)
     {
         BoardPointIndex previousBoardPointIndex = GetPreviousIndices(token)[index];
         yield return MoveTokenBackwardsTo(token, previousBoardPointIndex);
-    }
-
-    /// <summary>
-    /// Gets the BoardPointIndex that token would move to after moving token by distance
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="distance"></param>
-    /// <returns></returns>
-    public BoardPointIndex GetIndexAfterMove(Token token, int distance)
-    {
-        var tempTokenObject = Instantiate<GameObject>(emptyTokenPrefab, token.transform.position, Quaternion.identity);
-        Token tempToken = tempTokenObject.GetComponent<Token>();
-        tempToken.visitedCorners = new Stack<BoardPointIndex>(token.visitedCorners);
-        tempToken.visitedCorners = new Stack<BoardPointIndex>(tempToken.visitedCorners);
-        tempToken.boardPointIndex = token.boardPointIndex;
-
-        if (tempToken.boardPointIndex == BoardPointIndex.Initial)
-        {
-            token.PushVisitedCorners(BoardPointIndex.LowerRight);
-            InstantMoveTokenTo(tempToken, BoardPointIndex.Right1);
-        }
-        else InstantMoveTokenByOne(tempToken, true);
-
-        for (int i = 0; i < distance-1; i++)
-        {
-            if (tempToken.boardPointIndex == BoardPointIndex.Finished) break;
-            InstantMoveTokenByOne(tempToken, false);
-        }
-        BoardPointIndex boardPointIndex = tempToken.boardPointIndex;
-        Destroy(tempTokenObject);
-        return boardPointIndex;
-    }
-
-    /// <summary>
-    /// Actually moves token by distance using MoveTokenByOne();
-    /// </summary>
-    /// <param name="token"></param>
-    /// <param name="distance"></param>
-    public IEnumerator MoveToken(Token token, int distance)
-    {
-        if (token.boardPointIndex == BoardPointIndex.Initial)
-        {
-            yield return MoveTokenTo(token, BoardPointIndex.LowerRight);
-            token.PushVisitedCorners(BoardPointIndex.LowerRight);
-            yield return MoveTokenTo(token, BoardPointIndex.Right1);
-        }
-        else yield return MoveTokenByOne(token, true);
-
-        for (int i = 0; i < distance-1; i++)
-        {
-            if (token.boardPointIndex == BoardPointIndex.Finished) break;
-            yield return MoveTokenByOne(token, false);
-        }
-        FindAllStacked(token);
     }
 
     /// <summary>
@@ -412,7 +444,7 @@ public class TokenManager : MonoBehaviour
     /// <param name="index"></param>
     public void StartMoveBackwards(Token token, int index)
     {
-        StartCoroutine(MoveTokenByOneBackwards(token, index));
+        StartCoroutine(MoveTokenBackwards(token, index));
     }
 
     /// <summary>

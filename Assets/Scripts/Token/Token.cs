@@ -163,7 +163,7 @@ public class Token : MonoBehaviour
         {
             token.InstantMoveTo(transform.position);
             token.gameObject.SetActive(true);
-            StartCoroutine(MoveTo(token.initialPosition));
+            StartCoroutine(token.MoveTo(token.initialPosition));
         }
         stackedTokens.Clear();
     }
