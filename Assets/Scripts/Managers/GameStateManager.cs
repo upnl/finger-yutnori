@@ -15,6 +15,8 @@ public enum GameState
 
 public class GameStateManager : MonoBehaviour
 {
+    private AudioManager _audioManager;
+    
     public GameState GameState { get; private set; }
 
     public void turnToPlayer2()
@@ -34,6 +36,8 @@ public class GameStateManager : MonoBehaviour
     void Start()
     {
         GameState = GameState.Player1Turn;
+        _audioManager = GameManager.Instance.AudioManager;
+        _audioManager.PlayBGM();
     }
 
     
