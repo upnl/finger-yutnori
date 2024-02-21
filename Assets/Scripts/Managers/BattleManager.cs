@@ -12,12 +12,12 @@ public class BattleManager : MonoBehaviour
     
     public RSPState[,] BattleIndex =
             {
-            { RSPState.draw, RSPState.twowinwithzero, RSPState.twowinwithzero, RSPState.twowinwithzero, RSPState.onewinwithzero, RSPState.onewinwithzero },
-            { RSPState.onewinwithzero, RSPState.draw, RSPState.twowin, RSPState.twowin, RSPState.onewin, RSPState.onewin},
-            { RSPState.onewinwithzero, RSPState.onewin, RSPState.draw, RSPState.twowin, RSPState.twowin, RSPState.onewin},
-            { RSPState.onewinwithzero, RSPState.onewin, RSPState.onewin, RSPState.draw, RSPState.twowin, RSPState.twowin},
-            { RSPState.twowinwithzero, RSPState.twowin, RSPState.onewin, RSPState.onewin, RSPState.draw, RSPState.twowin},
-            { RSPState.twowinwithzero, RSPState.twowin, RSPState.twowin, RSPState.onewin, RSPState.onewin, RSPState.draw}
+            { RSPState.draw, RSPState.twoWin, RSPState.twoWin, RSPState.twoWin, RSPState.oneWinWithZero, RSPState.oneWinWithZero },
+            { RSPState.oneWin, RSPState.draw, RSPState.twoWin, RSPState.twoWin, RSPState.oneWin, RSPState.oneWin},
+            { RSPState.oneWin, RSPState.oneWin, RSPState.draw, RSPState.twoWin, RSPState.twoWin, RSPState.oneWin},
+            { RSPState.oneWin, RSPState.oneWin, RSPState.oneWin, RSPState.draw, RSPState.twoWin, RSPState.twoWin},
+            { RSPState.twoWinWithZero, RSPState.twoWin, RSPState.oneWin, RSPState.oneWin, RSPState.draw, RSPState.twoWin},
+            { RSPState.twoWinWithZero, RSPState.twoWin, RSPState.twoWin, RSPState.oneWin, RSPState.oneWin, RSPState.draw}
         };
 
     public Player player1;
@@ -26,14 +26,13 @@ public class BattleManager : MonoBehaviour
 
     public UIManager UIManager { get; private set; }
 
-    // Start is called before the first frame update
     public enum RSPState
     {
-        onewin = -2,
-        onewinwithzero = -1,
+        oneWin = -2,
+        oneWinWithZero = -1,
         draw = 0,
-        twowinwithzero = 1,
-        twowin = 2,
+        twoWinWithZero = 1,
+        twoWin = 2,
         error = 3
     }
     private void Awake()

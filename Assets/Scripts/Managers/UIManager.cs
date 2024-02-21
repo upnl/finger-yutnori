@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject player2Text;
     [SerializeField] private GameObject player1Image;
     [SerializeField] private GameObject player2Image;
+    [SerializeField] private GameObject battlemanagerobj;
 
     string player1name = "";
     string player2name = "";
@@ -40,7 +41,7 @@ public class UIManager : MonoBehaviour
         player1name = PlayerPrefs.GetString("player1Name");
         player2name = PlayerPrefs.GetString("player2Name");
         _gameStateManager = GameManager.Instance.GameStateManager;
-        battlemanager = GetComponentInParent<BattleManager>();
+        battlemanager = battlemanagerobj.GetComponent<BattleManager>();
     }
 
     private void Update()
@@ -140,19 +141,19 @@ public class UIManager : MonoBehaviour
 
         switch (result)
         {
-            case BattleManager.RSPState.onewin:
+            case BattleManager.RSPState.oneWin:
                 player1result= player1name + " wins!";
                 player2result = player2name + " loses!";
                 break;
-            case BattleManager.RSPState.twowin:
+            case BattleManager.RSPState.twoWin:
                 player2result = player2name + " wins!";
                 player1result = player1name + " loses!";
                 break;
-            case BattleManager.RSPState.onewinwithzero:
+            case BattleManager.RSPState.oneWinWithZero:
                 player1result = player1name + " wins with zero!";
                 player2result = player2name + " loses!";
                 break;
-            case BattleManager.RSPState.twowinwithzero:
+            case BattleManager.RSPState.twoWinWithZero:
                 player2result = player2name + " wins with zero!";
                 player1result = player1name + " loses!";
                 break;

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311924, g: 0.38073963, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -672,7 +672,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgmPlayer: {fileID: 99947443}
+  sfxPlayer: {fileID: 0}
   bgmClip: {fileID: 8300000, guid: 097c59ff8aa8b43f0b08b9423befee03, type: 3}
+  sfxClips: []
 --- !u!1 &256148339
 GameObject:
   m_ObjectHideFlags: 0
@@ -2519,6 +2521,7 @@ MonoBehaviour:
   player2Text: {fileID: 366203458}
   player1Image: {fileID: 1865802086}
   player2Image: {fileID: 1536635500}
+  battlemanagerobj: {fileID: 1003602428}
   TargetPlayer0Done: {fileID: 97880151}
   TargetPlayer1Done: {fileID: 1878852114}
   TargetCanvas: {fileID: 7628541}
@@ -4453,6 +4456,7 @@ Transform:
   - {fileID: 1168327075}
   - {fileID: 1814938883}
   - {fileID: 99947442}
+  - {fileID: 1003602429}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2049443929
