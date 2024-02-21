@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 6134087418137246859}
   - component: {fileID: 4734931652958701755}
   - component: {fileID: 4245633658454282659}
-  - component: {fileID: 404383247111431923}
-  - component: {fileID: -2760046657059470963}
+  - component: {fileID: -8591631226476074948}
+  - component: {fileID: 9200277795121806715}
   m_Layer: 0
-  m_Name: MoveButtonPrefab
+  m_Name: BackButtonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.24523847, g: 0.6792453, b: 0.17728725, a: 1}
+  m_Color: {r: 0.28657869, g: 0.7924528, b: 0.72270745, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &404383247111431923
+--- !u!114 &-8591631226476074948
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,9 +121,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -2760046657059470963}
-        m_TargetAssemblyTypeName: MoveButton, Assembly-CSharp
-        m_MethodName: OnClickMoveButton
+      - m_Target: {fileID: 9200277795121806715}
+        m_TargetAssemblyTypeName: BackButton, Assembly-CSharp
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -133,7 +133,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &-2760046657059470963
+--- !u!114 &9200277795121806715
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,9 +142,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 5812822074379851267}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f49133ab3dc35bd4cb52ce1f419d8550, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d14565db42134f46b87e7b89227e593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tokenManager: {fileID: 0}
-  thisToken: {fileID: 0}
-  steps: 0
+  token: {fileID: 0}
+  boardPointIndex: 0

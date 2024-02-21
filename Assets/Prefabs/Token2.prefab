@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1852434450281391763}
   - component: {fileID: 7361595372838270216}
   - component: {fileID: 5363900129259459100}
+  - component: {fileID: -6625909311604717641}
   m_Layer: 0
   m_Name: Token2
   m_TagString: Untagged
@@ -97,3 +98,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aae729c056c8f9409f1763e34ab0ce0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialPosition: {x: 0, y: 0}
+  boardPointIndex: 0
+  stackedTokens: []
+--- !u!58 &-6625909311604717641
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 864976361006012577}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2.4
