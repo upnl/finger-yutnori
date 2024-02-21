@@ -78,7 +78,7 @@ public class TokenManager : MonoBehaviour
 
         for (int i = 0; i < initialPositions1.Count; i++)
         {
-            var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
+            var newTokenObject = Instantiate(tokenPrefab1, initialPositions1[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
             newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
@@ -88,7 +88,7 @@ public class TokenManager : MonoBehaviour
         }
         for (int i = 0; i < initialPositions2.Count; i++)
         {
-            var newTokenObject = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
+            var newTokenObject = Instantiate(tokenPrefab2, initialPositions2[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
             newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
