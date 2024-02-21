@@ -3,28 +3,19 @@ using DG.Tweening;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using System.Collections;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public class Token : MonoBehaviour
 {
-    private bool _canFinish;  // false before moving out of lowerRightPoint
-    private bool _hasLooped;  // true if token has reached lowerRightPoint with forward movement
-    private int _routeType;   // 0: right->upper->left->lower / 1: right->upper->leftDiag
-                              // 2: right->rightDiag->lower   / 3: right->rightDiag->leftDiag
-    private BoardPointIndex _boardPointIndex;
-    private Vector2 _initialPosition;
-
-    public bool canFinish { get => _canFinish; set => _canFinish = value; }
-    public bool hasLooped { get => _hasLooped; set => _hasLooped = value; }
-    public int routeType { get => _routeType; set => _routeType = value; }
-    public BoardPointIndex boardPointIndex { get => _boardPointIndex; set => _boardPointIndex = value; }
-    public Vector2 initialPosition { get => _initialPosition; set => _initialPosition = value; }
+    public Vector2 initialPosition;
+    public BoardPointIndex boardPointIndex;
+    public Stack<BoardPointIndex> visitedCorners;
+    public List<Token> stackedTokens;
 
     private void Awake()
     {
-        _canFinish = false;
-        _hasLooped = false;
-        _routeType = 0;
-        _boardPointIndex = BoardPointIndex.Initial;
+        visitedCorners = new Stack<BoardPointIndex>();
+        stackedTokens = new List<Token>();
     }
 
     private void Update()
@@ -33,7 +24,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to newPosition instantly
+    /// Moves Token to newPosition instantly
     /// </summary>
     /// <param name="newPosition"></param>
     public void InstantMoveTo(Vector2 newPosition)
@@ -42,7 +33,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to boardPoint instantly
+    /// Moves Token to boardPoint instantly
     /// </summary>
     /// <param name="boardPoint"></param>
     public void InstantMoveTo(GameObject boardPoint)
@@ -51,7 +42,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to newPosition smoothly and records previous position; Use with StartCoroutine()
+    /// Moves Token to newPosition smoothly; Use with StartCoroutine()
     /// </summary>
     /// <param name="newPosition"></param>
     public IEnumerator MoveTo(Vector2 newPosition)
@@ -60,7 +51,7 @@ public class Token : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves token to boardPoint smoothly and records previous position; Use with StartCoroutine()
+    /// Moves Token to boardPoint smoothly; Use with StartCoroutine()
     /// </summary>
     /// <param name="boardPoint"></param>
     public IEnumerator MoveTo(GameObject boardPoint)
@@ -86,5 +77,94 @@ public class Token : MonoBehaviour
     public bool IsTokenAt(GameObject boardPoint)
     {
         return IsTokenAt(boardPoint.transform.position);
+    }
+
+    /// <summary>
+    /// Returns whether the Token is at the same position as otherToken
+    /// </summary>
+    /// <param name="otherToken"></param>
+    /// <returns></returns>
+    public bool IsStacked(Token otherToken)
+    {
+        return IsTokenAt(otherToken.transform.position);
+    }
+
+    public bool isAtCorner()
+    {
+        return boardPointIndex == BoardPointIndex.LowerRight ||
+               boardPointIndex == BoardPointIndex.UpperRight ||
+               boardPointIndex == BoardPointIndex.UpperLeft ||
+               boardPointIndex == BoardPointIndex.LowerLeft ||
+               boardPointIndex == BoardPointIndex.Center;
+    }
+
+    public bool isValid()
+    {
+        return !isAtCorner() || visitedCorners.Contains(boardPointIndex);
+    }
+
+    /// <summary>
+    /// If boardPointIndex is corner point, push it into visitedCorners
+    /// </summary>
+    /// <param name="boardPointIndex"></param>
+    public void PushVisitedCorners(BoardPointIndex boardPointIndex)
+    {
+        if (boardPointIndex == BoardPointIndex.LowerRight ||
+            boardPointIndex == BoardPointIndex.UpperRight ||
+            boardPointIndex == BoardPointIndex.UpperLeft ||
+            boardPointIndex == BoardPointIndex.LowerLeft ||
+            boardPointIndex == BoardPointIndex.Center) visitedCorners.Push(boardPointIndex);
+    }
+    
+    /// <summary>
+    /// Pop visitedCorners until targetIndex is at top
+    /// </summary>
+    /// <param name="targetIndex"></param>
+    public void PopVisitedCornersUntil(BoardPointIndex targetIndex)
+    {
+        if (visitedCorners.Contains(targetIndex))
+        {
+            while (visitedCorners.Peek() != targetIndex)
+            {
+                visitedCorners.Pop();
+            }
+        }
+        foreach (Token stackedToken in stackedTokens) stackedToken.PopVisitedCornersUntil(targetIndex);
+    }
+
+    public BoardPointIndex GetPreviousCornerAtCorner()
+    {
+        if (visitedCorners.Count < 2) return BoardPointIndex.Initial;
+
+        BoardPointIndex tempIndex = visitedCorners.Pop();
+        BoardPointIndex result = visitedCorners.Peek();
+        visitedCorners.Push(tempIndex);
+        return result;
+    }
+
+    /// <summary>
+    /// Stacks otherToken onto this Token
+    /// </summary>
+    /// <param name="otherToken"></param>
+    public void Stack(Token otherToken)
+    {
+        stackedTokens.Add(otherToken);
+        stackedTokens.AddRange(otherToken.stackedTokens);
+        otherToken.stackedTokens.Clear();
+        otherToken.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Unstacks all stackedTokens and moves them to initialPosition
+    /// </summary>
+    public void Unstack()
+    {
+        foreach (Token token in stackedTokens)
+        {
+            token.InstantMoveTo(transform.position);
+            token.gameObject.SetActive(true);
+            StartCoroutine(token.MoveTo(token.initialPosition));
+        }
+        stackedTokens.Clear();
     }
 }
