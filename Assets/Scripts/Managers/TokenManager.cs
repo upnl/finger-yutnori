@@ -158,7 +158,11 @@ public class TokenManager : MonoBehaviour
         else
         {
             if (DecideWinner() != 0) GameEnd();
-            else _gameStateManager.StartPlayer1Turn();
+            else
+            {
+                yield return new WaitForSeconds(1f);
+                _gameStateManager.StartPlayer1Turn();
+            }
         }
     }
 
@@ -421,6 +425,7 @@ public class TokenManager : MonoBehaviour
         if (boardPointIndex == BoardPointIndex.Initial)
         {
             yield return ResetToken(token);
+            yield return new WaitForSeconds(1f);
             _gameStateManager.StartPlayer1Turn();
             yield break;
         }
