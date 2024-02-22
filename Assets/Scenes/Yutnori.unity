@@ -4879,10 +4879,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u3141\u3134"
+  m_text: "\uD654\uBA74\uD074\uB9AD"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 17b913374772b465b991468b44405443, type: 2}
-  m_sharedMaterial: {fileID: -1271765670051878419, guid: 17b913374772b465b991468b44405443, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4918,7 +4918,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 0
+  m_lineSpacing: 50
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
