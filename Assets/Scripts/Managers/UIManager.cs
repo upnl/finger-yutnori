@@ -38,7 +38,6 @@ public class UIManager : MonoBehaviour
     private TokenManager _tokenManager;
     private string player1Hand;
     private string player2Hand;
-
     void Awake()
     {
         drawCount = 0;
