@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -197,5 +198,15 @@ public class UIManager : MonoBehaviour
         if (_battleManager.GetRSPState() == BattleManager.RSPState.draw /* && drawCount < 3 */)
             _gameStateManager.StartPlayer1Turn();
         else _gameStateManager.StartYutnori();
+    }
+
+    public void OnClickRestartButton()
+    {
+        SceneManager.LoadScene("Yutnori");
+    }
+
+    public void OnClickNewGameButton()
+    {
+        SceneManager.LoadScene("Login");
     }
 }

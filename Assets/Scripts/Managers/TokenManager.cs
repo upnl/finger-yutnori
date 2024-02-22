@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public enum BoardPointIndex
 {
@@ -45,7 +43,6 @@ public class TokenManager : MonoBehaviour
 {
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject endingScreen;
-    [SerializeField] private Button RestartButton, NewGameButton;
 
     private PrepareManager _prepareManager;
     private GameStateManager _gameStateManager;
@@ -583,16 +580,6 @@ public class TokenManager : MonoBehaviour
         }
 
         return false;
-    }
-
-    public void OnClickRestartButton()
-    {
-        SceneManager.LoadScene("Yutnori");
-    }
-
-    public void OnClickNewGameButton()
-    {
-        SceneManager.LoadScene("Login");
     }
 
     private void GameEnd()

@@ -4237,7 +4237,6 @@ GameObject:
   - component: {fileID: 1413889256}
   - component: {fileID: 1413889255}
   - component: {fileID: 1413889254}
-  - component: {fileID: 1413889253}
   m_Layer: 5
   m_Name: NewGameButton
   m_TagString: Untagged
@@ -4265,18 +4264,6 @@ RectTransform:
   m_AnchoredPosition: {x: 250, y: -750}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1413889253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413889251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3b085874eec7494e8c49c64d65680dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1413889254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4321,8 +4308,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1413889253}
-        m_TargetAssemblyTypeName: EndingButton, Assembly-CSharp
+      - m_Target: {fileID: 2146686444}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: OnClickNewGameButton
         m_Mode: 1
         m_Arguments:
@@ -4864,7 +4851,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a697a234d86c74799b49a968e9b2e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tokenManager: {fileID: 1678223110}
   prepareImages: {fileID: 1464791164}
   buttons: {fileID: 759439761}
   previewPrefab: {fileID: 5812822074379851267, guid: e7607e44be6a4d545b19c8d1e4e04137, type: 3}
@@ -5324,11 +5310,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e1f1383ff0b7340899b3f395fc12c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prepareManager: {fileID: 1533649792}
   canvas: {fileID: 582925531}
   endingScreen: {fileID: 2143579820}
-  RestartButton: {fileID: 1705051861}
-  NewGameButton: {fileID: 1413889254}
   boardPoints:
   - {fileID: 165916986}
   - {fileID: 559975570}
@@ -5373,15 +5356,15 @@ MonoBehaviour:
   - {x: 20, y: -64.5}
   - {x: 10, y: -64.5}
   finishedPositions1:
-  - {x: -40, y: 58}
-  - {x: -30, y: 58}
-  - {x: -20, y: 58}
-  - {x: -10, y: 58}
+  - {x: -40, y: 60}
+  - {x: -30, y: 60}
+  - {x: -20, y: 60}
+  - {x: -10, y: 60}
   finishedPositions2:
-  - {x: 40, y: 58}
-  - {x: 30, y: 58}
-  - {x: 20, y: 58}
-  - {x: 10, y: 58}
+  - {x: 40, y: 60}
+  - {x: 30, y: 60}
+  - {x: 20, y: 60}
+  - {x: 10, y: 60}
   tokens1: []
   tokens2: []
   winTokenList: []
@@ -5596,7 +5579,6 @@ GameObject:
   - component: {fileID: 1705051863}
   - component: {fileID: 1705051862}
   - component: {fileID: 1705051861}
-  - component: {fileID: 1705051860}
   m_Layer: 5
   m_Name: RestartButton
   m_TagString: Untagged
@@ -5624,18 +5606,6 @@ RectTransform:
   m_AnchoredPosition: {x: -250, y: -750}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1705051860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1705051858}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3b085874eec7494e8c49c64d65680dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1705051861
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5680,8 +5650,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1705051860}
-        m_TargetAssemblyTypeName: EndingButton, Assembly-CSharp
+      - m_Target: {fileID: 2146686444}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: OnClickRestartButton
         m_Mode: 1
         m_Arguments:
@@ -6795,7 +6765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2015515723}
   m_Layer: 5
-  m_Name: EndingButtons
+  m_Name: Buttons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
