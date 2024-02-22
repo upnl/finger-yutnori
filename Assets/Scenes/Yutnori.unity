@@ -300,10 +300,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press
+  m_text: "\uBC84\uD2BC\uC744 \uB20C\uB7EC\uC8FC\uC138\uC694"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1382,7 +1382,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 1 won!
+  m_Text: "1 \uC2B9\uB9AC!"
 --- !u!222 &493276812
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3970,7 +3970,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart
+  m_text: "\uB2E4\uC2DC \uC2DC\uC791"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
@@ -4549,7 +4549,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press
+  m_text: "\uBC84\uD2BC\uC744 \uB20C\uB7EC\uC8FC\uC138\uC694"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
@@ -6494,7 +6494,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Result
+  m_text: "\uACB0\uACFC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
@@ -6701,7 +6701,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Game
+  m_text: "\uC0C8 \uAC8C\uC784"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
