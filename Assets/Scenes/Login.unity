@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311924, g: 0.38073963, b: 0.3587269, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -377,17 +377,18 @@ PrefabInstance:
     - target: {fileID: 5666900400604447427, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_fontStyle
       value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.b
-      value: 0.6392157
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.g
-      value: 0.69411767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.r
-      value: 0.8509804
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -570,17 +571,18 @@ PrefabInstance:
     - target: {fileID: 5666900400604447427, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_fontStyle
       value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.b
-      value: 0.6392157
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.g
-      value: 0.69411767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.r
-      value: 0.8509804
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1330,7 +1332,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_Color: {r: 0.8509804, g: 0.69411767, b: 0.6392157, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
