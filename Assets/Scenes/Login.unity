@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -183,15 +183,15 @@ MonoBehaviour:
   m_text: "\uC190\uC744 \uC120\uD0DD\uD558\uC9C0 \uC54A\uC73C\uBA74, \uB79C\uB364\uC73C\uB85C
     \uC120\uD0DD\uB429\uB2C8\uB2E4."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 17b913374772b465b991468b44405443, type: 2}
-  m_sharedMaterial: {fileID: -1271765670051878419, guid: 17b913374772b465b991468b44405443, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -362,6 +362,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3109425202004820253, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
+      objectReference: {fileID: 0}
     - target: {fileID: 4083201442667933439, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Name
       value: Player1InputField
@@ -370,17 +374,21 @@ PrefabInstance:
       propertyPath: m_text
       value: "Player 1 \uC815\uBCF4 \uC785\uB825."
       objectReference: {fileID: 0}
+    - target: {fileID: 5666900400604447427, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.b
-      value: 0.6392157
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.g
-      value: 0.69411767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.r
-      value: 0.8509804
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -443,7 +451,7 @@ MonoBehaviour:
   emptyNameText: {fileID: 1484221635}
   sameNameText: {fileID: 935078745}
   moveSpeed: 1
-  alphaSpeed: 1
+  alphaSpeed: 2
 --- !u!1001 &342864494
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -552,21 +560,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3109425202004820253, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
+      objectReference: {fileID: 0}
     - target: {fileID: 4083201442667933439, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Name
       value: Player2InputField
       objectReference: {fileID: 0}
+    - target: {fileID: 5666900400604447427, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
+      propertyPath: m_fontStyle
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.b
-      value: 0.6392157
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.g
-      value: 0.69411767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9009146352959288354, guid: a35ef3550d2174c97baa932bd007c06a, type: 3}
       propertyPath: m_Color.r
-      value: 0.8509804
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -610,10 +626,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1119859691}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -200}
-  m_SizeDelta: {x: 600, y: 50}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -220}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &386521869
 MonoBehaviour:
@@ -637,15 +653,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC190\uAC00\uB77D\uC737\uB180\uC774"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 17b913374772b465b991468b44405443, type: 2}
-  m_sharedMaterial: {fileID: -1271765670051878419, guid: 17b913374772b465b991468b44405443, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294903552
-  m_fontColor: {r: 0, g: 0.028639317, b: 1, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -662,13 +678,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 70
-  m_fontSizeBase: 70
+  m_fontSize: 110
+  m_fontSizeBase: 110
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -1038,15 +1054,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB450 \uD50C\uB808\uC774\uC5B4\uC758 \uC774\uB984\uC774 \uAC19\uC2B5\uB2C8\uB2E4"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 17b913374772b465b991468b44405443, type: 2}
-  m_sharedMaterial: {fileID: -1271765670051878419, guid: 17b913374772b465b991468b44405443, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289741312
-  m_fontColor: {r: 0, g: 0.25746724, b: 0.6886792, a: 1}
+    rgba: 4278255360
+  m_fontColor: {r: 0, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1315,7 +1331,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8509804, g: 0.69411767, b: 0.6392157, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1532,15 +1548,15 @@ MonoBehaviour:
   m_text: "\uB450 \uD50C\uB808\uC774\uC5B4\uC758 \uC774\uB984\uC744 \uBAA8\uB450
     \uC785\uB825\uD574\uC8FC\uC138\uC694\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 17b913374772b465b991468b44405443, type: 2}
-  m_sharedMaterial: {fileID: -1271765670051878419, guid: 17b913374772b465b991468b44405443, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
+  m_sharedMaterial: {fileID: 896089932703899059, guid: ba530dbb00dff4137ae9a4329a29a11f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289806848
-  m_fontColor: {r: 0, g: 0.25882354, b: 0.69411767, a: 1}
+    rgba: 4278255360
+  m_fontColor: {r: 0, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
