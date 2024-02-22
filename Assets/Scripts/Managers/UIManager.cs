@@ -106,6 +106,8 @@ public class UIManager : MonoBehaviour
             = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이 손가락을 선택합니다.";
 
         player1ImageSprite = Buttons[fingerToggleGroup.selectedFinger].GetComponentInChildren<Image>().sprite;
+        Transform player1Scale = showResultScreen.transform.Find("Player1Image").GetComponent<Transform>();
+        player1Scale.localScale = Buttons[fingerToggleGroup.selectedFinger].GetComponent<Transform>().localScale;
     }
 
     public void Player2TurnScreen()
@@ -142,6 +144,9 @@ public class UIManager : MonoBehaviour
 
         GameManager.Instance.player2.latestChoice = fingerToggleGroup.selectedFinger;
         player2ImageSprite = Buttons[fingerToggleGroup.selectedFinger].GetComponentInChildren<Image>().sprite;
+
+        Transform player2Scale = showResultScreen.transform.Find("Player1Image").GetComponent<Transform>();
+        player2Scale.localScale = Buttons[fingerToggleGroup.selectedFinger].GetComponent<Transform>().localScale;
     }
 
     public void ShowResultScreen()
