@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,6 +33,8 @@ public class UIManager : MonoBehaviour
     private BattleManager _battleManager;
     private GameStateManager _gameStateManager;
     private TokenManager _tokenManager;
+    private string player1Hand;
+    private string player2Hand;
 
     void Awake()
     {
@@ -41,6 +44,9 @@ public class UIManager : MonoBehaviour
 
         player1Name = PlayerPrefs.GetString("player1Name");
         player2Name = PlayerPrefs.GetString("player2Name");
+
+        player1Hand = PlayerPrefs.GetString("player1Hand");
+        player2Hand = PlayerPrefs.GetString("player2Hand");
 
         _battleManager = GameManager.Instance.BattleManager;
         _gameStateManager = GameManager.Instance.GameStateManager;
@@ -70,6 +76,24 @@ public class UIManager : MonoBehaviour
         selectScreen.transform.position = baseCanvas.transform.position;
         TMP_Text playerText = selectScreen.transform.Find("PlayerText").GetComponent<TMP_Text>();
         playerText.text = GameManager.Instance.player1.playerName;
+
+        Transform toggleTransform;
+        if(player1Hand == "LeftHand")
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+        }
     }
 
     public void ChangeTurnScreen()
@@ -91,6 +115,24 @@ public class UIManager : MonoBehaviour
 
         TMP_Text playerText = selectScreen.transform.Find("PlayerText").GetComponent<TMP_Text>();
         playerText.text = GameManager.Instance.player2.playerName;
+
+        Transform toggleTransform;
+        if (player2Hand == "LeftHand")
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+        }
     }
 
     public void WaitForResultScreen()
