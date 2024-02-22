@@ -503,7 +503,7 @@ public class TokenManager : MonoBehaviour
         {
             if (AbleToClickToken(winToken) == true)
             {
-                noAbleToken = true;
+                noAbleToken = false;
                 break;
             }
         }
