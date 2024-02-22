@@ -13,18 +13,24 @@ using static UnityEngine.GraphicsBuffer;
 
 public class PrepareManager : MonoBehaviour
 {
-    [SerializeField] private TokenManager tokenManager;
     [SerializeField] private GameObject prepareImages, buttons;
 
     [SerializeField] private GameObject previewPrefab, targetPrefab;
     [SerializeField] private GameObject backButtonPrefab;
+
+    private TokenManager _tokenManager;
 
     private Queue<GameObject> previewPool, targetPool;
     private Queue<BackButton> backButtonPool;
     private List<GameObject> activePreviewList, activeTargetList;
     private List<BackButton> activeBackButtonList;
 
-    private int TokenCount;
+    private int tokenCount;
+
+    private void Start()
+    {
+        _tokenManager = GameManager.Instance.TokenManager;
+    }
 
     public void ResetSettings()
     {
@@ -37,13 +43,13 @@ public class PrepareManager : MonoBehaviour
 
     private void ResetVars()
     {
-        if (tokenManager.initialPositions1.Count > tokenManager.initialPositions2.Count)
+        if (_tokenManager.initialPositions1.Count > _tokenManager.initialPositions2.Count)
         {
-            TokenCount = tokenManager.initialPositions1.Count;
+            tokenCount = _tokenManager.initialPositions1.Count;
         }
         else
         {
-            TokenCount = tokenManager.initialPositions2.Count;
+            tokenCount = _tokenManager.initialPositions2.Count;
         }
     }
 
@@ -53,7 +59,7 @@ public class PrepareManager : MonoBehaviour
         activePreviewList = new();
 
         GameObject newPreview;
-        for (int i = 0; i < TokenCount + 4; i++)
+        for (int i = 0; i < tokenCount + 4; i++)
         {
             newPreview = Instantiate(previewPrefab);
 
@@ -124,7 +130,7 @@ public class PrepareManager : MonoBehaviour
     {
         DeactivateTarget();
 
-        if (steps == -1 && tokenManager.GetPreviousIndices(token).Count != 1) ActivateBackButtons(token);
+        if (steps == -1 && _tokenManager.GetPreviousIndices(token).Count != 1) ActivateBackButtons(token);
     }
 
     public void OnClickBackButton() // click back button
@@ -135,9 +141,9 @@ public class PrepareManager : MonoBehaviour
     private void ActivatePreviews(int steps)
     {
         List<Vector2> previewPositionList = new();
-        foreach (Token token in tokenManager.winTokenList)
+        foreach (Token token in _tokenManager.winTokenList)
         {
-            if (tokenManager.AbleToClickToken(token))
+            if (_tokenManager.AbleToClickToken(token))
             {
                 previewPositionList.AddRange(GetMovePositionList(token, steps));
             }
@@ -175,13 +181,13 @@ public class PrepareManager : MonoBehaviour
 
     private void ActivateBackButtons(Token token)
     {
-        List<BoardPointIndex> moveIndexList = tokenManager.GetPreviousIndices(token);
+        List<BoardPointIndex> moveIndexList = _tokenManager.GetPreviousIndices(token);
 
         BackButton backButton;
         Vector2 backButtonPosition;
         foreach (BoardPointIndex moveIndex in moveIndexList)
         {
-            backButtonPosition = tokenManager.boardPoints[(int)moveIndex].transform.position;
+            backButtonPosition = _tokenManager.boardPoints[(int)moveIndex].transform.position;
 
             backButton = backButtonPool.Dequeue();
 
@@ -237,17 +243,17 @@ public class PrepareManager : MonoBehaviour
 
         if (steps == -1)
         {
-            List<BoardPointIndex> moveIndexList = tokenManager.GetPreviousIndices(token);
+            List<BoardPointIndex> moveIndexList = _tokenManager.GetPreviousIndices(token);
             foreach (BoardPointIndex moveIndex in moveIndexList)
             {
                 if (moveIndex == BoardPointIndex.Initial) movePositionList.Add(token.initialPosition);
                 else if (moveIndex == BoardPointIndex.Finished) movePositionList.Add(token.finishedPosition);
-                else movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
+                else movePositionList.Add(_tokenManager.boardPoints[(int)moveIndex].transform.position);
             }
         }
         else
         {
-            BoardPointIndex moveIndex = tokenManager.GetIndexAfterMove(token, steps);
+            BoardPointIndex moveIndex = _tokenManager.GetIndexAfterMove(token, steps);
             if (moveIndex == BoardPointIndex.Initial)
             {
                 movePositionList.Add(token.initialPosition);
@@ -258,7 +264,7 @@ public class PrepareManager : MonoBehaviour
             }
             else
             {
-                movePositionList.Add(tokenManager.boardPoints[(int)moveIndex].transform.position);
+                movePositionList.Add(_tokenManager.boardPoints[(int)moveIndex].transform.position);
             }
         }
 

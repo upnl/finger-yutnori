@@ -4,41 +4,65 @@ using UnityEngine.SceneManagement;
 
 public enum GameState
 {
+    Yutnori,
     Player1Turn,
+    ChangeTurn,
     Player2Turn,
-    ReadyResult,
-    BattleResult,
-    MovToken,
+    WaitForResult,
+    ShowResult,
     End
 }
 
 
 public class GameStateManager : MonoBehaviour
 {
-    private AudioManager _audioManager;
-    
-    public GameState GameState { get; private set; }
+    private UIManager _UIManager;
+    public GameState gameState { get; private set; }
 
-    public void turnToPlayer2()
-    {
-        GameState = GameState.Player2Turn;
-    }
-
-    public void readyBattleResult()
-    {
-        GameState = GameState.ReadyResult;
-    }
-    public void showBattleResult()
-    {
-        GameState = GameState.BattleResult;
-    }
-    
     void Start()
     {
-        GameState = GameState.Player1Turn;
-        _audioManager = GameManager.Instance.AudioManager;
-        _audioManager.PlayBGM();
+        _UIManager = GameManager.Instance.UIManager;
+        StartPlayer1Turn();
     }
 
-    
+    public void StartYutnori()
+    {
+        gameState = GameState.Yutnori;
+        _UIManager.YutnoriScreen();
+    }
+
+    public void StartPlayer1Turn()
+    {
+        gameState = GameState.Player1Turn;
+        _UIManager.Player1TurnScreen();
+    }
+
+    public void StartChangeTurn()
+    {
+        gameState = GameState.ChangeTurn;
+        _UIManager.ChangeTurnScreen();
+    }
+
+    public void StartPlayer2Turn()
+    {
+        gameState = GameState.Player2Turn;
+        _UIManager.Player2TurnScreen();
+    }
+
+    public void StartWaitForResult()
+    {
+        gameState = GameState.WaitForResult;
+        _UIManager.WaitForResultScreen();
+    }
+    public void StartShowResult()
+    {
+        gameState = GameState.ShowResult;
+        _UIManager.ShowResultScreen();
+    }
+
+    public void GameEnd()
+    {
+        gameState = GameState.End;
+        _UIManager.ShowEndScreen();
+    }
 }

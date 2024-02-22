@@ -95,7 +95,7 @@ public class LoginManager : MonoBehaviour
 		PlayerPrefs.SetString("player2Hand", player2Hand);
 		//playerprefs를 이용해 플레이어의 정보를 저장한다.
 		
-		SceneManager.LoadScene("Battle");
+		SceneManager.LoadScene("Yutnori");
 	}
 	
 

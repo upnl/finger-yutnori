@@ -58,4 +58,50 @@ public class BattleManager : MonoBehaviour
         result = BattleIndex[player1, player2];
         return result;
     }
+
+    public RSPState GetRSPState()
+    {
+        int player1Choice = GameManager.Instance.player1.latestChoice;
+        int player2Choice = GameManager.Instance.player2.latestChoice;
+        return CompareSelection(player1Choice, player2Choice);
+    }
+
+    public int GetWinner()
+    {
+        switch (GetRSPState())
+        {
+            case RSPState.draw:
+                return 0;
+
+            case RSPState.oneWin:
+            case RSPState.oneWinWithZero:
+                return 1;
+
+            case RSPState.twoWin:
+            case RSPState.twoWinWithZero:
+                return 2;
+
+            default:
+                return -1;
+        }
+    }
+
+    public int GetSteps()
+    {
+        switch (GetRSPState())
+        {
+            case RSPState.oneWin:
+                return GameManager.Instance.player1.latestChoice;
+
+            case RSPState.twoWin:
+                return GameManager.Instance.player2.latestChoice;
+
+            case RSPState.oneWinWithZero:
+            case RSPState.twoWinWithZero:
+                return -1;
+
+            default:
+                return 0;
+        }
+    }
 }

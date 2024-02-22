@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public enum BoardPointIndex
 {
@@ -43,10 +41,11 @@ public enum BoardPointIndex
 
 public class TokenManager : MonoBehaviour
 {
-    [SerializeField] private PrepareManager prepareManager;
     [SerializeField] private Canvas canvas;
-    [SerializeField] private GameObject tokens, endingScreen;
-    [SerializeField] private Button RestartButton, NewGameButton;
+    [SerializeField] private GameObject endingScreen;
+
+    private PrepareManager _prepareManager;
+    private GameStateManager _gameStateManager;
 
     public List<GameObject> boardPoints;
 
@@ -60,27 +59,28 @@ public class TokenManager : MonoBehaviour
 
     public List<Token> winTokenList;
     /// <summary>
-    /// 0 : wait to choose player
-    /// 1 : wait to choose steps
-    /// 2 : PrepareManager.ActivatePreviews()
-    /// 3 : wait token click
-    /// 4 : wait back button click
+    /// 0 : waiting
+    /// 1 : wait token click
+    /// 2 : wait back button click
     /// </summary>
-    private int keyStep = 0;
+    private int inputStep;
     private int steps;
 
     private void Start()
     {
+        _prepareManager = GameManager.Instance.PrepareManager;
+        _gameStateManager = GameManager.Instance.GameStateManager;
+
         tokens1 = new List<Token>();
         tokens2 = new List<Token>();
 
         score1 = score2 = 0;
+        inputStep = 0;
 
         for (int i = 0; i < initialPositions1.Count; i++)
         {
-            var newTokenObject = Instantiate<GameObject>(tokenPrefab1, initialPositions1[i], Quaternion.identity);
+            var newTokenObject = Instantiate(tokenPrefab1, initialPositions1[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
-            newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions1[i];
             newToken.finishedPosition = finishedPositions1[i];
@@ -88,25 +88,24 @@ public class TokenManager : MonoBehaviour
         }
         for (int i = 0; i < initialPositions2.Count; i++)
         {
-            var newTokenObject = Instantiate<GameObject>(tokenPrefab2, initialPositions2[i], Quaternion.identity);
+            var newTokenObject = Instantiate(tokenPrefab2, initialPositions2[i], Quaternion.identity);
             Token newToken = newTokenObject.GetComponent<Token>();
-            newToken.transform.SetParent(tokens.transform);
             newToken.boardPointIndex = BoardPointIndex.Initial;
             newToken.initialPosition = initialPositions2[i];
             newToken.finishedPosition = finishedPositions2[i];
             tokens2.Add(newToken);
         }
 
-        foreach (Token token in tokens1) ResetToken(token); // reset tokens1
-        foreach (Token token in tokens2) ResetToken(token); // reset tokens2
+        foreach (Token token in tokens1) StartCoroutine(ResetToken(token)); // reset tokens1
+        foreach (Token token in tokens2) StartCoroutine(ResetToken(token)); // reset tokens2
 
-        prepareManager.ResetSettings();
+        _prepareManager.ResetSettings();
     }
 
     private void Update()
     {
+        if (_gameStateManager.gameState != GameState.Yutnori) return;
         if (DecideWinner() != 0) GameEnd();
-        DebugHandleInput();
     }
 
     public int GetPlayer(Token token)
@@ -144,7 +143,7 @@ public class TokenManager : MonoBehaviour
         GetTokens(GetPlayer(thisToken)).Remove(otherToken);
     }
 
-    public void HandleStackable(Token token)
+    public IEnumerator HandleStackable(Token token)
     {
         Token stackableToken = FindStackable(token, GetPlayer(token));
         if (stackableToken != null) StackOnto(token, stackableToken);
@@ -153,8 +152,13 @@ public class TokenManager : MonoBehaviour
         if (stackableToken != null)
         {
             token.AttackTrigger = true;
-            ResetToken(stackableToken);
-            StartMove(token, 1);
+            StartCoroutine(ResetToken(stackableToken));
+            yield return MoveToken(token, 1);
+        }
+        else
+        {
+            if (DecideWinner() != 0) GameEnd();
+            else _gameStateManager.StartPlayer1Turn();
         }
     }
 
@@ -163,7 +167,7 @@ public class TokenManager : MonoBehaviour
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public void ResetToken(Token token)
+    public IEnumerator ResetToken(Token token)
     {
         foreach (Token stackedToken in token.Unstack())
         {
@@ -172,7 +176,7 @@ public class TokenManager : MonoBehaviour
             GetTokens(GetPlayer(token)).Add(stackedToken);
         }
         token.visitedCorners.Clear();
-        StartCoroutine(MoveTokenTo(token, BoardPointIndex.Initial));
+        yield return MoveTokenTo(token, BoardPointIndex.Initial);
     }
 
     public IEnumerator FinishToken(Token token)
@@ -309,7 +313,6 @@ public class TokenManager : MonoBehaviour
             if (stackedToken.isValid() && !indices.Contains(tempIndex)) indices.Add(tempIndex);
         }
 
-        foreach (BoardPointIndex index in indices) Debug.Log(index);
         return indices;
     }
 
@@ -385,6 +388,7 @@ public class TokenManager : MonoBehaviour
 
     /// <summary>
     /// Actually moves token by distance using MoveTokenByOne();
+    /// Use with StartCoroutine()
     /// </summary>
     /// <param name="token"></param>
     /// <param name="distance"></param>
@@ -403,7 +407,7 @@ public class TokenManager : MonoBehaviour
             if (token.boardPointIndex == BoardPointIndex.Finished) break;
             yield return MoveTokenByOne(token, false);
         }
-        HandleStackable(token);
+        yield return HandleStackable(token);
     }
 
     /// <summary>
@@ -416,7 +420,8 @@ public class TokenManager : MonoBehaviour
     {
         if (boardPointIndex == BoardPointIndex.Initial)
         {
-            ResetToken(token);
+            yield return ResetToken(token);
+            _gameStateManager.StartPlayer1Turn();
             yield break;
         }
         switch (boardPointIndex)
@@ -441,7 +446,7 @@ public class TokenManager : MonoBehaviour
                 break;
         }
         yield return MoveTokenTo(token, boardPointIndex);
-        HandleStackable(token);
+        yield return HandleStackable(token);
     }
 
     /// <summary>
@@ -487,86 +492,63 @@ public class TokenManager : MonoBehaviour
         StartCoroutine(MoveTokenBackwards(token, index));
     }
 
-    /// <summary>
-    /// A debug function that handles keyboard input
-    /// </summary>
-    private void DebugHandleInput()
+    public void StartTurn(int winner, int steps)
     {
-        if (keyStep == 0)
-        {
-            keyStep = 1;
+        if (winner == 0) return;
+        winTokenList = GetTokens(winner);
+        this.steps = steps;
 
-            if (Input.GetKeyDown(KeyCode.A)) winTokenList = tokens1;
-            else if (Input.GetKeyDown(KeyCode.B)) winTokenList = tokens2;
-            else keyStep = 0;
-        }
-        else if (keyStep == 1)
+        Token onMouseOverToken = null;
+        foreach (Token winToken in winTokenList)
         {
-            keyStep = 2;
-
-            if (Input.GetKeyDown(KeyCode.Alpha1)) steps = 1;
-            else if (Input.GetKeyDown(KeyCode.Alpha2)) steps = 2;
-            else if (Input.GetKeyDown(KeyCode.Alpha3)) steps = 3;
-            else if (Input.GetKeyDown(KeyCode.Alpha4)) steps = 4;
-            else if (Input.GetKeyDown(KeyCode.Alpha5)) steps = 5;
-            else if (Input.GetKeyDown(KeyCode.Alpha0)) steps = -1;
-            else keyStep = 1;
-        }
-        else if (keyStep == 2)
-        {
-            keyStep = 3;
-
-            Token onMouseOverToken = null;
-            foreach (Token winToken in winTokenList)
+            if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
             {
-                if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
-                {
-                    onMouseOverToken = winToken;
-                    break;
-                }
+                onMouseOverToken = winToken;
+                break;
             }
-
-            if (onMouseOverToken == null) prepareManager.PreparePreviews(steps);
-            else OnMouseEnterTokenGroup(onMouseOverToken);
         }
+
+        if (onMouseOverToken == null) _prepareManager.PreparePreviews(steps);
+        else OnMouseEnterTokenGroup(onMouseOverToken);
+        inputStep = 1;
     }
 
     public void OnMouseEnterTokenGroup(Token token)
     {
-        if (keyStep == 3 && AbleToClickToken(token))
+        if (inputStep == 1 && AbleToClickToken(token))
         {
-            prepareManager.OnMouseEnterTokenGroup(token, steps);
+            _prepareManager.OnMouseEnterTokenGroup(token, steps);
         }
     }
 
     public void OnMouseExitTokenGroup(Token token)
     {
-        if (keyStep == 3 && AbleToClickToken(token))
+        if (inputStep == 1 && AbleToClickToken(token))
         {
-            prepareManager.OnMouseExitTokenGroup(token, steps);
+            _prepareManager.OnMouseExitTokenGroup(token, steps);
         }
     }
 
     public void OnMouseDownTokenGroup(Token token)
     {
-        if (keyStep == 3 && AbleToClickToken(token))
+        if (inputStep == 1 && AbleToClickToken(token))
         {
-            prepareManager.OnMouseDownTokenGroup(token, steps);
+            _prepareManager.OnMouseDownTokenGroup(token, steps);
 
             if (steps == -1)
             {
                 List<BoardPointIndex> previousIndices = GetPreviousIndices(token);
                 if (previousIndices.Count == 1)
                 {
-                    keyStep = 0;
+                    inputStep = 0;
 
                     StartMoveBackwards(token, previousIndices[0]);
                 }
-                else keyStep = 4;
+                else inputStep = 2;
             }
             else
             {
-                keyStep = 0;
+                inputStep = 0;
                 StartMove(token, steps);
             }
         }
@@ -574,11 +556,11 @@ public class TokenManager : MonoBehaviour
 
     public void OnClickBackButton(Token token, BoardPointIndex boardPointIndex)
     {
-        if (keyStep == 4)
+        if (inputStep == 2)
         {
-            keyStep = 0;
+            inputStep = 0;
 
-            prepareManager.OnClickBackButton();
+            _prepareManager.OnClickBackButton();
 
             StartMoveBackwards(token, boardPointIndex);
         }
@@ -600,23 +582,8 @@ public class TokenManager : MonoBehaviour
         return false;
     }
 
-    public void OnClickRestartButton()
-    {
-        SceneManager.LoadScene("Yutnori");
-    }
-
-    public void OnClickNewGameButton()
-    {
-        SceneManager.LoadScene("Login");
-    }
-
     private void GameEnd()
     {
-        endingScreen.transform.position = canvas.transform.position;
-
-        Text text = endingScreen.GetComponentInChildren<Text>();
-
-        text.text = DecideWinner() + " won!";
-        //UnityEditor.EditorApplication.isPlaying = false;
+        _gameStateManager.GameEnd();
     }
 }
