@@ -16,6 +16,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject waitForResultScreen;
     [SerializeField] private GameObject showResultScreen;
     [SerializeField] private GameObject endScreen;
+    [SerializeField] private TMP_Text player1NameBox;
+    [SerializeField] private TMP_Text player2NameBox;
+    
 
     public Vector2 selectScreenPosition;
     public Vector2 changeTurnScreenPosition;
@@ -27,7 +30,7 @@ public class UIManager : MonoBehaviour
     private Sprite player2ImageSprite;
 
     private string player1Name, player2Name;
-
+    
     private int drawCount;
 
     private BattleManager _battleManager;
@@ -56,6 +59,9 @@ public class UIManager : MonoBehaviour
         waitForResultScreenPosition = waitForResultScreen.transform.position;
         showResultScreenPosition = showResultScreen.transform.position;
         endScreenPosition = endScreen.transform.position;
+        
+        player1NameBox.text = player1Name;
+        player2NameBox.text = player2Name;
     }
 
     private void Update()
@@ -102,7 +108,7 @@ public class UIManager : MonoBehaviour
 
         GameManager.Instance.player1.latestChoice = fingerToggleGroup.selectedFinger;
         changeTurnScreen.transform.Find("Text").GetComponent<TMP_Text>().text
-            = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이 손가락을 선택합니다.";
+            = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이(가) 손가락을 선택합니다.";
 
         player1ImageSprite = Buttons[fingerToggleGroup.selectedFinger].GetComponentInChildren<Image>().sprite;
         Transform player1Scale = showResultScreen.transform.Find("Player1Image").GetComponent<Transform>();

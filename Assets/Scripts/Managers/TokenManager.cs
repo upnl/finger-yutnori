@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public enum BoardPointIndex
@@ -158,7 +156,11 @@ public class TokenManager : MonoBehaviour
         else
         {
             if (DecideWinner() != 0) GameEnd();
-            else _gameStateManager.StartPlayer1Turn();
+            else
+            {
+                yield return new WaitForSeconds(1f);
+                _gameStateManager.StartPlayer1Turn();
+            }
         }
     }
 
@@ -421,6 +423,7 @@ public class TokenManager : MonoBehaviour
         if (boardPointIndex == BoardPointIndex.Initial)
         {
             yield return ResetToken(token);
+            yield return new WaitForSeconds(1f);
             _gameStateManager.StartPlayer1Turn();
             yield break;
         }
@@ -498,19 +501,33 @@ public class TokenManager : MonoBehaviour
         winTokenList = GetTokens(winner);
         this.steps = steps;
 
-        Token onMouseOverToken = null;
+        bool noAbleToken = true;
         foreach (Token winToken in winTokenList)
         {
-            if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+            if (AbleToClickToken(winToken) == true)
             {
-                onMouseOverToken = winToken;
+                noAbleToken = false;
                 break;
             }
         }
 
-        if (onMouseOverToken == null) _prepareManager.PreparePreviews(steps);
-        else OnMouseEnterTokenGroup(onMouseOverToken);
-        inputStep = 1;
+        if (noAbleToken == true) _gameStateManager.StartPlayer1Turn();
+        else
+        {
+            Token onMouseOverToken = null;
+            foreach (Token winToken in winTokenList)
+            {
+                if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+                {
+                    onMouseOverToken = winToken;
+                    break;
+                }
+            }
+
+            if (onMouseOverToken == null) _prepareManager.PreparePreviews(steps);
+            else OnMouseEnterTokenGroup(onMouseOverToken);
+            inputStep = 1;
+        }
     }
 
     public void OnMouseEnterTokenGroup(Token token)
