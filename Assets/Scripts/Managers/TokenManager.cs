@@ -498,19 +498,33 @@ public class TokenManager : MonoBehaviour
         winTokenList = GetTokens(winner);
         this.steps = steps;
 
-        Token onMouseOverToken = null;
+        bool noAbleToken = true;
         foreach (Token winToken in winTokenList)
         {
-            if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+            if (AbleToClickToken(winToken) == true)
             {
-                onMouseOverToken = winToken;
+                noAbleToken = true;
                 break;
             }
         }
 
-        if (onMouseOverToken == null) _prepareManager.PreparePreviews(steps);
-        else OnMouseEnterTokenGroup(onMouseOverToken);
-        inputStep = 1;
+        if (noAbleToken == true) _gameStateManager.StartPlayer1Turn();
+        else
+        {
+            Token onMouseOverToken = null;
+            foreach (Token winToken in winTokenList)
+            {
+                if (AbleToClickToken(winToken) && winToken.IsOnMouseOver() == true)
+                {
+                    onMouseOverToken = winToken;
+                    break;
+                }
+            }
+
+            if (onMouseOverToken == null) _prepareManager.PreparePreviews(steps);
+            else OnMouseEnterTokenGroup(onMouseOverToken);
+            inputStep = 1;
+        }
     }
 
     public void OnMouseEnterTokenGroup(Token token)
