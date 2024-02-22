@@ -42,8 +42,8 @@ PlayerSettings:
   m_SplashScreenLogos: []
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
-  defaultScreenWidth: 1920
-  defaultScreenHeight: 1080
+  defaultScreenWidth: 1080
+  defaultScreenHeight: 1920
   defaultScreenWidthWeb: 960
   defaultScreenHeightWeb: 600
   m_StereoRenderingPath: 0
@@ -859,11 +859,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: a483c771-5832-4493-9b3c-b11cd8c00e71
+  cloudProjectId: 2574bcf2-ed2a-48fb-a205-f00b1d3b2c68
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Finger Yutnori
-  organizationId: nick11967
+  projectName: finger-yutnori
+  organizationId: aspectivej-gmail-com
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

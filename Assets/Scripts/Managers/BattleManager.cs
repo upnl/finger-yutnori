@@ -6,9 +6,6 @@ public class BattleManager : MonoBehaviour
 {
     public int player1selection = -1;
     public int player2selection = -1;
-    bool IsItDraw = false;
-    
-    
     
     public RSPState[,] BattleIndex =
             {
