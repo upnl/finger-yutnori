@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,6 +36,8 @@ public class UIManager : MonoBehaviour
     private BattleManager _battleManager;
     private GameStateManager _gameStateManager;
     private TokenManager _tokenManager;
+    private string player1Hand;
+    private string player2Hand;
 
     void Awake()
     {
@@ -44,8 +47,10 @@ public class UIManager : MonoBehaviour
 
         player1Name = PlayerPrefs.GetString("player1Name");
         player2Name = PlayerPrefs.GetString("player2Name");
-        
-        
+
+        player1Hand = PlayerPrefs.GetString("player1Hand");
+        player2Hand = PlayerPrefs.GetString("player2Hand");
+
         _battleManager = GameManager.Instance.BattleManager;
         _gameStateManager = GameManager.Instance.GameStateManager;
         _tokenManager = GameManager.Instance.TokenManager;
@@ -77,6 +82,24 @@ public class UIManager : MonoBehaviour
         selectScreen.transform.position = baseCanvas.transform.position;
         TMP_Text playerText = selectScreen.transform.Find("PlayerText").GetComponent<TMP_Text>();
         playerText.text = GameManager.Instance.player1.playerName;
+
+        Transform toggleTransform;
+        if(player1Hand == "LeftHand")
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+        }
     }
 
     public void ChangeTurnScreen()
@@ -89,6 +112,8 @@ public class UIManager : MonoBehaviour
             = "화면을 누르면\n" + GameManager.Instance.player2.playerName + "이(가) 손가락을 선택합니다.";
 
         player1ImageSprite = Buttons[fingerToggleGroup.selectedFinger].GetComponentInChildren<Image>().sprite;
+        Transform player1Scale = showResultScreen.transform.Find("Player1Image").GetComponent<Transform>();
+        player1Scale.localScale = Buttons[fingerToggleGroup.selectedFinger].GetComponent<Transform>().localScale;
     }
 
     public void Player2TurnScreen()
@@ -98,6 +123,24 @@ public class UIManager : MonoBehaviour
 
         TMP_Text playerText = selectScreen.transform.Find("PlayerText").GetComponent<TMP_Text>();
         playerText.text = GameManager.Instance.player2.playerName;
+
+        Transform toggleTransform;
+        if (player2Hand == "LeftHand")
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                toggleTransform = Buttons[i].GetComponent<Transform>();
+                toggleTransform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+        }
     }
 
     public void WaitForResultScreen()
@@ -107,6 +150,9 @@ public class UIManager : MonoBehaviour
 
         GameManager.Instance.player2.latestChoice = fingerToggleGroup.selectedFinger;
         player2ImageSprite = Buttons[fingerToggleGroup.selectedFinger].GetComponentInChildren<Image>().sprite;
+
+        Transform player2Scale = showResultScreen.transform.Find("Player1Image").GetComponent<Transform>();
+        player2Scale.localScale = Buttons[fingerToggleGroup.selectedFinger].GetComponent<Transform>().localScale;
     }
 
     public void ShowResultScreen()
