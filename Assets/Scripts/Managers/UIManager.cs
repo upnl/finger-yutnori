@@ -29,6 +29,10 @@ public class UIManager : MonoBehaviour
     private Sprite player1ImageSprite;
     private Sprite player2ImageSprite;
 
+    [SerializeField] private Sprite winEffect;
+    [SerializeField] private Sprite loseEffect;
+    [SerializeField] private Sprite NoneEffect;
+
     private string player1Name, player2Name;
     
     private int drawCount;
@@ -168,6 +172,9 @@ public class UIManager : MonoBehaviour
         Image player1Image = showResultScreen.transform.Find("Player1Image").GetComponent<Image>();
         Image player2Image = showResultScreen.transform.Find("Player2Image").GetComponent<Image>();
 
+        Image player1Effect = showResultScreen.transform.Find("Player1Effect").GetComponent<Image>();
+        Image player2Effect = showResultScreen.transform.Find("Player2Effect").GetComponent<Image>();
+
         player1Image.sprite = player1ImageSprite;
         player2Image.sprite = player2ImageSprite;
 
@@ -175,21 +182,32 @@ public class UIManager : MonoBehaviour
         {
             case BattleManager.RSPState.oneWin:
                 player1result = player1Name + " wins!";
+                player1Effect.sprite = winEffect;
                 player2result = player2Name + " loses!";
+                player2Effect.sprite = loseEffect;
                 break;
             case BattleManager.RSPState.twoWin:
                 player2result = player2Name + " wins!";
+                player2Effect.sprite = winEffect;
                 player1result = player1Name + " loses!";
+                player1Effect.sprite = loseEffect;
                 break;
             case BattleManager.RSPState.oneWinWithZero:
                 player1result = player1Name + " wins with zero!";
+                player1Effect.sprite = winEffect;
                 player2result = player2Name + " loses!";
+                player2Effect.sprite = loseEffect;
                 break;
             case BattleManager.RSPState.twoWinWithZero:
                 player2result = player2Name + " wins with zero!";
+                player2Effect.sprite = winEffect;
                 player1result = player1Name + " loses!";
+                player1Effect.sprite = loseEffect;
                 break;
             case BattleManager.RSPState.draw:
+                player1Effect.sprite = NoneEffect;
+                player2Effect.sprite = NoneEffect;
+
                 if (drawCount >= 2)
                 {
                     player1result = "The 3rd draw!";
