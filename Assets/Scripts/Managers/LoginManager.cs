@@ -78,6 +78,7 @@ public class LoginManager : MonoBehaviour
 		if (player1Name.Equals("") || player2Name.Equals(""))
 		{
 			emptyNameText.gameObject.SetActive(true);
+			emptyNameText.transform.localPosition = new Vector3(0,500,0);
 			alphaEmptyColor.a = 1f;
 			return;
 		}
@@ -85,6 +86,7 @@ public class LoginManager : MonoBehaviour
 		if (player1Name.Equals(player2Name))
 		{
 			sameNameText.gameObject.SetActive(true);
+			sameNameText.transform.localPosition = new Vector3(0, 500, 0);
 			alphaSameColor.a = 1f;
 			return;
 		}
