@@ -66,6 +66,8 @@ public class UIManager : MonoBehaviour
         
         player1NameBox.text = player1Name;
         player2NameBox.text = player2Name;
+
+
     }
 
     private void Update()
@@ -177,6 +179,9 @@ public class UIManager : MonoBehaviour
 
         player1Image.sprite = player1ImageSprite;
         player2Image.sprite = player2ImageSprite;
+
+        player1Effect.sprite = NoneEffect;
+        player2Effect.sprite = NoneEffect;
 
         switch (result)
         {
